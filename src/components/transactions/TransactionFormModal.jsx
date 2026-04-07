@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Modal from "../ui/Modal";
 
-const ESTADO_INICIAL = {
+const INITIAL_STATE = {
   accountId: "",
   categoryId: "",
   transactionTypeId: "",
@@ -13,52 +13,57 @@ const ESTADO_INICIAL = {
   installmentTotal: "",
 };
 
-function TransacaoFormModal({
+function TransactionFormModal({
   isOpen,
   onClose,
-  transacaoEditando,
-  onSalvar,
-  contas,
-  categorias,
-  tiposTransacao,
+  editing,
+  onSave,
+  accounts,
+  categories,
+  transactionTypes,
 }) {
-  const [form, setForm] = useState(ESTADO_INICIAL);
+  const [form, setForm] = useState(INITIAL_STATE);
 
+  // Preenche ou limpa o form
   useEffect(() => {
     if (isOpen) {
-      if (transacaoEditando) {
+      if (editing) {
         setForm({
-          accountId: transacaoEditando.accountId?.toString() || "",
-          categoryId: transacaoEditando.categoryId?.toString() || "",
-          transactionTypeId:
-            transacaoEditando.transactionTypeId?.toString() || "",
-          direction: transacaoEditando.direction || "expense",
-          amount: transacaoEditando.amount?.toString() || "",
-          description: transacaoEditando.description || "",
+          accountId: editing.accountId?.toString() || "",
+          categoryId: editing.categoryId?.toString() || "",
+          transactionTypeId: editing.transactionTypeId?.toString() || "",
+          direction: editing.direction || "expense",
+          amount: editing.amount?.toString() || "",
+          description: editing.description || "",
           transactionDate:
-            transacaoEditando.transactionDate?.split("T")[0] ||
+            editing.transactionDate?.split("T")[0] ||
             new Date().toISOString().split("T")[0],
-          isInstallment: transacaoEditando.isInstallment || false,
-          installmentTotal:
-            transacaoEditando.installmentTotal?.toString() || "",
+          isInstallment: editing.isInstallment || false,
+          installmentTotal: editing.installmentTotal?.toString() || "",
         });
       } else {
-        setForm(ESTADO_INICIAL);
+        setForm(INITIAL_STATE);
       }
     }
-  }, [isOpen, transacaoEditando]);
+  }, [isOpen, editing]);
 
-  const set = (field, value) =>
+  const setField = (field, value) => {
     setForm((prev) => ({ ...prev, [field]: value }));
+  };
 
-  const handleTipoChange = (tipoId) => {
-    const tipo = tiposTransacao.find((t) => t.id === Number(tipoId));
-    set("transactionTypeId", tipoId);
-    if (tipo) set("direction", tipo.direction);
+  const handleTypeChange = (typeId) => {
+    const type = transactionTypes.find((t) => t.id === Number(typeId));
+
+    setField("transactionTypeId", typeId);
+
+    if (type) {
+      setField("direction", type.direction);
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     const payload = {
       accountId: Number(form.accountId),
       categoryId: form.categoryId ? Number(form.categoryId) : null,
@@ -73,8 +78,12 @@ function TransacaoFormModal({
         : null,
       installmentNumber: form.isInstallment ? 1 : null,
     };
-    if (transacaoEditando) payload.id = transacaoEditando.id;
-    onSalvar(payload);
+
+    if (editing) {
+      payload.id = editing.id;
+    }
+
+    onSave(payload);
   };
 
   const inputCls =
@@ -84,25 +93,25 @@ function TransacaoFormModal({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={transacaoEditando ? "Editar Transação" : "Nova Transação"}
+      title={editing ? "Editar Transação" : "Nova Transação"}
       size="md"
     >
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Tipo de transação */}
+        {/* Tipo */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Tipo de Transação
           </label>
           <select
             value={form.transactionTypeId}
-            onChange={(e) => handleTipoChange(e.target.value)}
+            onChange={(e) => handleTypeChange(e.target.value)}
             required
             className={inputCls}
           >
             <option value="">Selecione...</option>
-            {tiposTransacao.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
+            {transactionTypes.map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.name}
               </option>
             ))}
           </select>
@@ -115,14 +124,14 @@ function TransacaoFormModal({
           </label>
           <select
             value={form.accountId}
-            onChange={(e) => set("accountId", e.target.value)}
+            onChange={(e) => setField("accountId", e.target.value)}
             required
             className={inputCls}
           >
             <option value="">Selecione uma conta...</option>
-            {contas.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
+            {accounts.map((a) => (
+              <option key={a.id} value={a.id}>
+                {a.name}
               </option>
             ))}
           </select>
@@ -131,16 +140,15 @@ function TransacaoFormModal({
         {/* Categoria */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Categoria{" "}
-            <span className="text-gray-400 font-normal">(opcional)</span>
+            Categoria <span className="text-gray-400">(opcional)</span>
           </label>
           <select
             value={form.categoryId}
-            onChange={(e) => set("categoryId", e.target.value)}
+            onChange={(e) => setField("categoryId", e.target.value)}
             className={inputCls}
           >
             <option value="">Sem categoria</option>
-            {categorias.map((c) => (
+            {categories.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.name}
               </option>
@@ -148,7 +156,7 @@ function TransacaoFormModal({
           </select>
         </div>
 
-        {/* Valor e Data */}
+        {/* Valor + Data */}
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -159,12 +167,12 @@ function TransacaoFormModal({
               step="0.01"
               min="0.01"
               value={form.amount}
-              onChange={(e) => set("amount", e.target.value)}
-              placeholder="0,00"
+              onChange={(e) => setField("amount", e.target.value)}
               required
               className={inputCls}
             />
           </div>
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Data
@@ -172,7 +180,9 @@ function TransacaoFormModal({
             <input
               type="date"
               value={form.transactionDate}
-              onChange={(e) => set("transactionDate", e.target.value)}
+              onChange={(e) =>
+                setField("transactionDate", e.target.value)
+              }
               required
               className={inputCls}
             />
@@ -182,31 +192,30 @@ function TransacaoFormModal({
         {/* Descrição */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Descrição{" "}
-            <span className="text-gray-400 font-normal">(opcional)</span>
+            Descrição <span className="text-gray-400">(opcional)</span>
           </label>
           <input
             type="text"
             value={form.description}
-            onChange={(e) => set("description", e.target.value)}
-            placeholder="Ex: Conta de luz de março"
+            onChange={(e) => setField("description", e.target.value)}
+            placeholder="Ex: Conta de luz"
             className={inputCls}
           />
         </div>
 
-        {/* Parcelamento (apenas para despesas) */}
+        {/* Parcelamento */}
         {form.direction === "expense" && (
           <div className="space-y-3">
             <label className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
                 checked={form.isInstallment}
-                onChange={(e) => set("isInstallment", e.target.checked)}
-                className="w-4 h-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                onChange={(e) =>
+                  setField("isInstallment", e.target.checked)
+                }
+                className="w-4 h-4"
               />
-              <span className="text-sm font-medium text-gray-700">
-                Compra parcelada
-              </span>
+              <span className="text-sm">Compra parcelada</span>
             </label>
 
             {form.isInstallment && (
@@ -219,33 +228,32 @@ function TransacaoFormModal({
                   min="2"
                   max="60"
                   value={form.installmentTotal}
-                  onChange={(e) => set("installmentTotal", e.target.value)}
-                  placeholder="Ex: 12"
+                  onChange={(e) =>
+                    setField("installmentTotal", e.target.value)
+                  }
                   required
                   className={inputCls}
                 />
-                <p className="text-xs text-gray-400 mt-1">
-                  O valor será dividido igualmente entre as parcelas.
-                </p>
               </div>
             )}
           </div>
         )}
 
-        {/* Botões */}
-        <div className="flex gap-3 pt-4 border-t border-gray-200">
+        {/* BOTÕES */}
+        <div className="flex gap-3 pt-4 border-t">
           <button
             type="button"
             onClick={onClose}
-            className="flex-1 px-4 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+            className="flex-1 bg-gray-100 hover:bg-gray-200 py-2 rounded-lg"
           >
             Cancelar
           </button>
+
           <button
             type="submit"
-            className="flex-1 px-4 py-2.5 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-colors"
+            className="flex-1 bg-emerald-600 text-white hover:bg-emerald-700 py-2 rounded-lg"
           >
-            {transacaoEditando ? "Atualizar" : "Lançar"}
+            {editing ? "Atualizar" : "Salvar"}
           </button>
         </div>
       </form>
@@ -253,4 +261,4 @@ function TransacaoFormModal({
   );
 }
 
-export default TransacaoFormModal;
+export default TransactionFormModal;
