@@ -61,7 +61,6 @@ function TransactionsPage() {
     }
   };
 
-
   const formatCurrency = (value) =>
     new Intl.NumberFormat("pt-BR", {
       style: "currency",
@@ -95,23 +94,24 @@ function TransactionsPage() {
   };
 
   const handleSave = async (data) => {
-    try {
-      if (editing) {
-        await updateTransaction(editing.id, data);
-        toast.success("Transação atualizada");
-      } else {
-        await createTransaction(data);
-        toast.success("Transação criada");
-      }
-
-      setIsFormOpen(false);
-      setEditing(null);
-      await loadData();
-    } catch (err) {
-      toast.error("Erro ao salvar transação");
-      console.error(err);
+  try {
+    if (editing) {
+      await updateTransaction(editing.id, data);
+      toast.success("Transação atualizada");
+    } else {
+      await createTransaction(data);
+      toast.success("Transação criada");
     }
-  };
+
+    setIsFormOpen(false);
+    setEditing(null);
+    await loadData();
+  } catch (err) {
+    toast.error(
+      err.response?.data?.mensagem || "Erro ao salvar transação"
+    );
+  }
+};
 
   const handleDeleteConfirm = (t) => {
     setDeleting(t);
@@ -135,46 +135,55 @@ function TransactionsPage() {
     <div className="p-6 space-y-6">
       {/* HEADER */}
       <div className="flex justify-between items-center">
-        <div className="flex items-center gap-3">
-          <ArrowLeftRight className="w-5 h-5 text-emerald-600" />
-          <h1 className="text-xl font-bold">Transações</h1>
+        <div>
+          <div className="flex items-center gap-2">
+            <ArrowLeftRight className="w-5 h-5 text-emerald-600" />
+            <h1 className="text-2xl font-semibold text-gray-800">Transações</h1>
+          </div>
+          <p className="text-sm text-gray-500">
+            Gerencie suas receitas e despesas
+          </p>
         </div>
 
         <div className="flex gap-2">
           <button
             onClick={loadData}
-            title="Atualizar dados"
-            className="p-2 rounded-lg hover:bg-gray-100"
+            disabled={loading}
+            className="p-2 rounded-lg border hover:bg-gray-100 disabled:opacity-50"
           >
-            <RefreshCw className={loading ? "animate-spin" : ""} />
+            <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
           </button>
 
-          <button onClick={handleCreate} className="btn-primary flex items-center gap-1">
-            <Plus className="w-4 h-4" /> Nova
+          <button
+            onClick={handleCreate}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 shadow-sm"
+          >
+            <Plus className="w-4 h-4" />
+            Nova Transação
           </button>
         </div>
       </div>
 
       {/* RESUMO */}
-      <div className="grid grid-cols-3 gap-4">
-        <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 shadow-sm">
           <p className="text-xs text-emerald-700">Receitas</p>
-          <p className="text-lg font-bold text-emerald-700">
+          <p className="text-xl font-bold text-emerald-700">
             {formatCurrency(income)}
           </p>
         </div>
 
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+        <div className="bg-red-50 border border-red-200 rounded-xl p-4 shadow-sm">
           <p className="text-xs text-red-700">Despesas</p>
-          <p className="text-lg font-bold text-red-700">
+          <p className="text-xl font-bold text-red-700">
             {formatCurrency(expense)}
           </p>
         </div>
 
-        <div className="bg-gray-100 border border-gray-200 rounded-lg p-4">
+        <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 shadow-sm">
           <p className="text-xs text-gray-700">Saldo</p>
           <p
-            className={`text-lg font-bold ${
+            className={`text-xl font-bold ${
               balance >= 0 ? "text-emerald-700" : "text-red-700"
             }`}
           >

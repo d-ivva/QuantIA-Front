@@ -15,7 +15,7 @@ export const getTransactions = async () => {
 };
 
 export const getTransaction = async (id) => {
-  const response = await api.get(`/${id}`);
+  const response = await api.get(`/Transactions/${id}`);
   return response.data;
 };
 
@@ -24,13 +24,13 @@ export const createTransaction = async (transaction) => {
   return response.data;
 };
 
-export const updateTransaction = async (transaction) => {
-  const response = await api.put(`/${transaction.id}`, transaction);
+export const updateTransaction = async (id, transaction) => {
+  const response = await api.put(`/Transactions/${id}`, transaction);
   return response.data;
 };
 
 export const deleteTransaction = async (id) => {
-  const response = await api.delete(`/${id}`);
+  const response = await api.delete(`/Transactions/${id}`);
   return response.data;
 };
 

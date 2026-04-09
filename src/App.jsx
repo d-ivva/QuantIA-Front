@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/layout/Layout';
-import TransacoesPage from './components/transactions/TransactionPage';
+import Transactionpage from './components/transactions/TransactionPage';
 // import ContasPage from './components/contas/ContasPage';
 // import CategoriasPage from './components/categorias/CategoriasPage';
  
@@ -9,7 +9,7 @@ function App() {
     <Routes>
       <Route element={<Layout />}>
         <Route path="/" element={<Navigate to="/transactions" replace />} />
-        <Route path="/transactions" element={<TransacoesPage />} />
+        <Route path="/transactions" element={<Transactionpage />} />
         {/* Próximas entregas */}
         {/* <Route path="/contas" element={<ContasPage />} /> */}
         {/* <Route path="/categorias" element={<CategoriasPage />} /> */}

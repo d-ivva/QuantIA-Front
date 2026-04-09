@@ -2,7 +2,7 @@ import { NavLink } from 'react-router-dom';
 import { Wallet, ArrowLeftRight, CreditCard, Tag, BarChart2 } from 'lucide-react';
 
 const menuItems = [
-  { to: '/transacoes', label: 'Transações', icon: ArrowLeftRight, enabled: true },
+  { to: '/transactions', label: 'Transações', icon: ArrowLeftRight, enabled: true },
   { to: '/contas',    label: 'Contas',      icon: CreditCard,     enabled: false },
   { to: '/categorias',label: 'Categorias',  icon: Tag,            enabled: false },
   { to: '/relatorios',label: 'Relatórios',  icon: BarChart2,      enabled: false },

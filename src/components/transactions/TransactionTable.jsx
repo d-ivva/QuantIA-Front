@@ -30,8 +30,7 @@ function TransactionTable({
       currency: "BRL",
     }).format(value);
 
-  const formatDate = (date) =>
-    new Date(date).toLocaleDateString("pt-BR");
+  const formatDate = (date) => new Date(date).toLocaleDateString("pt-BR");
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
@@ -46,6 +45,14 @@ function TransactionTable({
             onChange={(e) => onSearchChange(e.target.value)}
             className="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-shadow"
           />
+          {search && (
+            <button
+              onClick={() => onSearchChange("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            >
+              ✕
+            </button>
+          )}
         </div>
       </div>
 
@@ -90,15 +97,14 @@ function TransactionTable({
           <tbody className="divide-y divide-gray-100">
             {filtered.map((t) => (
               <tr key={t.id} className="hover:bg-gray-50 transition-colors">
-                
                 {/* TIPO */}
                 <td className="px-6 py-4">
                   {t.direction === "income" ? (
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
                       <TrendingUp className="w-3 h-3" /> Receita
                     </span>
                   ) : (
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
                       <TrendingDown className="w-3 h-3" /> Despesa
                     </span>
                   )}
@@ -111,9 +117,11 @@ function TransactionTable({
                   </span>
 
                   {t.isInstallment && (
-                    <span className="ml-2 text-xs text-gray-400">
-                      ({t.installmentNumber}/{t.installmentTotal}x)
-                    </span>
+                    <div className="mt-1">
+                      <span className="text-[11px] px-2 py-0.5 bg-gray-100 rounded text-gray-600">
+                        {t.installmentNumber}/{t.installmentTotal} parcelas
+                      </span>
+                    </div>
                   )}
                 </td>
 
@@ -160,8 +168,7 @@ function TransactionTable({
                   <div className="flex justify-center gap-2">
                     <button
                       onClick={() => onEdit(t)}
-                      title="Editar transação"
-                      className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg"
+                      className="p-2 rounded-lg text-blue-600 hover:bg-blue-100 transition-colors"
                     >
                       <Pencil className="w-4 h-4" />
                     </button>
@@ -169,13 +176,12 @@ function TransactionTable({
                     <button
                       onClick={() => onDelete(t)}
                       title="Excluir transação"
-                      className="p-2 text-red-600 hover:bg-red-50 rounded-lg"
+                      className="p-2 rounded-lg text-red-600 hover:bg-red-100 transition-colors"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
                 </td>
-
               </tr>
             ))}
           </tbody>

@@ -1,19 +1,41 @@
-import ConfirmDialog from '../ui/ConfirmDialog';
+import ConfirmDialog from "../ui/ConfirmDialog";
 
-function TransacaoDeleteDialog({ isOpen, onClose, onConfirm, transacao }) {
+function TransactionDeleteDialog({ isOpen, onClose, onConfirm, transaction }) {
+  const formatCurrency = (value) =>
+    new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    }).format(value || 0);
+
+  const getMessage = () => {
+    if (!transaction) return "";
+
+    if (transaction.isInstallment) {
+      return `Esta é uma transação parcelada.
+
+      Ao remover, TODAS as parcelas serão excluídas.
+
+      Valor da parcela: ${formatCurrency(transaction.amount)}
+
+      Deseja continuar?`;
+    }
+
+        return `Tem certeza que deseja remover esta transação de ${formatCurrency(
+          transaction.amount,
+        )}?
+
+    Esta ação não pode ser desfeita.`;
+  };
+
   return (
     <ConfirmDialog
       isOpen={isOpen}
       onClose={onClose}
       onConfirm={onConfirm}
       title="Remover Transação"
-      message={
-        transacao
-          ? `Tem certeza que deseja remover esta transação de R$ ${transacao.amount?.toFixed(2).replace('.', ',')}? Esta ação não pode ser desfeita.`
-          : ''
-      }
+      message={getMessage()}
     />
   );
 }
 
-export default TransacaoDeleteDialog;
+export default TransactionDeleteDialog;
