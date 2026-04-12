@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
 
 const sizes = {
@@ -7,70 +7,71 @@ const sizes = {
   lg: "max-w-2xl",
 };
 
+const variants = {
+  default: "bg-gray-800",
+  income: "bg-emerald-600",
+  expense: "bg-red-500",
+};
+
 function Modal({
   isOpen,
   onClose,
   title,
   children,
   size = "md",
-  closeOnOverlay = true, // 🔥 controle importante
+  variant = "default",
 }) {
   const modalRef = useRef(null);
+  const [show, setShow] = useState(false);
 
   useEffect(() => {
-    const handleEsc = (e) => {
-      if (e.key === "Escape") onClose();
-    };
-
     if (isOpen) {
-      document.addEventListener("keydown", handleEsc);
+      setShow(true);
       document.body.style.overflow = "hidden";
 
-      // 🔥 foco no modal (UX + acessibilidade)
       setTimeout(() => {
         modalRef.current?.focus();
-      }, 0);
-    }
-
-    return () => {
-      document.removeEventListener("keydown", handleEsc);
+      }, 100);
+    } else {
       document.body.style.overflow = "";
-    };
-  }, [isOpen, onClose]);
+      setTimeout(() => setShow(false), 200);
+    }
+  }, [isOpen]);
 
-  if (!isOpen) return null;
+  if (!isOpen && !show) return null;
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity"
-      onClick={closeOnOverlay ? onClose : undefined}
+      className={`fixed inset-0 z-50 flex items-center justify-center 
+      bg-black/40 backdrop-blur-sm transition-opacity duration-200
+      ${isOpen ? "opacity-100" : "opacity-0"}`}
+      onClick={onClose}
     >
       <div
         ref={modalRef}
         tabIndex={-1}
-        className={`bg-white rounded-2xl shadow-2xl w-full ${sizes[size]} mx-4 
-        transform transition-all duration-200 scale-100 opacity-100
-        max-h-[90vh] flex flex-col`}
         onClick={(e) => e.stopPropagation()}
+        className={`bg-white w-full ${sizes[size]} mx-4 rounded-2xl shadow-2xl 
+        transform transition-all duration-200
+        ${isOpen ? "scale-100 opacity-100" : "scale-95 opacity-0"}
+        max-h-[90vh] flex flex-col`}
       >
-        {/* HEADER */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-800">
-            {title}
-          </h2>
+        {/* HEADER DINÂMICO */}
+        <div
+          className={`flex items-center justify-between px-6 py-4 
+          text-white rounded-t-2xl ${variants[variant]}`}
+        >
+          <h2 className="text-lg font-semibold">{title}</h2>
 
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg p-1 transition"
+            className="hover:bg-white/20 rounded-lg p-1 transition"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* BODY COM SCROLL */}
-        <div className="px-6 py-4 overflow-y-auto">
-          {children}
-        </div>
+        <div className="p-6 overflow-y-auto">{children}</div>
       </div>
     </div>
   );

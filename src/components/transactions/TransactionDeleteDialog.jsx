@@ -10,19 +10,19 @@ function TransactionDeleteDialog({ isOpen, onClose, onConfirm, transaction }) {
   const getMessage = () => {
     if (!transaction) return "";
 
-    if (transaction.isInstallment) {
-      return `Esta é uma transação parcelada.
+    if (transaction.installmentGroupId) {
+      return `Esta transação faz parte de um parcelamento.
 
-      Ao remover, TODAS as parcelas serão excluídas.
+        Ao remover, TODAS as parcelas vinculadas serão excluídas.
 
-      Valor da parcela: ${formatCurrency(transaction.amount)}
+        Valor da parcela: ${formatCurrency(transaction.amount)}
 
-      Deseja continuar?`;
+        Deseja continuar?`;
     }
 
-        return `Tem certeza que deseja remover esta transação de ${formatCurrency(
-          transaction.amount,
-        )}?
+    return `Tem certeza que deseja remover esta transação de ${formatCurrency(
+      transaction.amount,
+    )}?
 
     Esta ação não pode ser desfeita.`;
   };

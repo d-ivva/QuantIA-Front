@@ -94,24 +94,24 @@ function TransactionsPage() {
   };
 
   const handleSave = async (data) => {
-  try {
-    if (editing) {
-      await updateTransaction(editing.id, data);
-      toast.success("Transação atualizada");
-    } else {
-      await createTransaction(data);
-      toast.success("Transação criada");
-    }
+    try {
+      if (editing) {
+        await updateTransaction(editing.id, data);
+        toast.success("Transação atualizada");
+      } else {
+        await createTransaction(data);
+        toast.success("Transação criada");
+      }
 
-    setIsFormOpen(false);
-    setEditing(null);
-    await loadData();
-  } catch (err) {
-    toast.error(
-      err.response?.data?.mensagem || "Erro ao salvar transação"
-    );
-  }
-};
+      setIsFormOpen(false);
+      setEditing(null);
+      await loadData();
+    } catch (err) {
+      toast.error(
+        err.response?.data?.mensagem || "Erro ao salvar transação"
+      );
+    }
+  };
 
   const handleDeleteConfirm = (t) => {
     setDeleting(t);
@@ -156,7 +156,7 @@ function TransactionsPage() {
 
           <button
             onClick={handleCreate}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 shadow-sm"
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 shadow-sm"
           >
             <Plus className="w-4 h-4" />
             Nova Transação
@@ -183,9 +183,8 @@ function TransactionsPage() {
         <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 shadow-sm">
           <p className="text-xs text-gray-700">Saldo</p>
           <p
-            className={`text-xl font-bold ${
-              balance >= 0 ? "text-emerald-700" : "text-red-700"
-            }`}
+            className={`text-xl font-bold ${balance >= 0 ? "text-emerald-700" : "text-red-700"
+              }`}
           >
             {formatCurrency(balance)}
           </p>
