@@ -93,6 +93,28 @@ function TransactionsPage() {
     setIsFormOpen(true);
   };
 
+  const getErrorMessage = (err) => {
+    if (err.response?.data) {
+      if (typeof err.response.data === "string") {
+        return err.response.data;
+      }
+
+      if (err.response.data.message) {
+        return err.response.data.message;
+      }
+
+      if (err.response.data.title) {
+        return err.response.data.title;
+      }
+
+      if (err.response.data.errors) {
+        return Object.values(err.response.data.errors).flat().join(" | ");
+      }
+    }
+
+    return err.message || "Erro ao salvar transação";
+  };
+
   const handleSave = async (data) => {
     try {
       if (editing) {
@@ -107,9 +129,7 @@ function TransactionsPage() {
       setEditing(null);
       await loadData();
     } catch (err) {
-      toast.error(
-        err.response?.data?.mensagem || "Erro ao salvar transação"
-      );
+      toast.error(getErrorMessage(err));
     }
   };
 

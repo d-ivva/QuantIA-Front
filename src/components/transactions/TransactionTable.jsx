@@ -30,7 +30,11 @@ function TransactionTable({
       currency: "BRL",
     }).format(value);
 
-  const formatDate = (date) => new Date(date).toLocaleDateString("pt-BR");
+  const formatDate = (date) => {
+    if (!date) return "";
+
+    return date.split("T")[0].split("-").reverse().join("/");
+  };
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
@@ -152,11 +156,10 @@ function TransactionTable({
                 {/* VALOR */}
                 <td className="px-6 py-4 text-right">
                   <span
-                    className={`text-sm font-semibold ${
-                      t.direction === "income"
+                    className={`text-sm font-semibold ${t.direction === "income"
                         ? "text-emerald-700"
                         : "text-red-700"
-                    }`}
+                      }`}
                   >
                     {t.direction === "expense" && "− "}
                     {formatCurrency(t.amount)}

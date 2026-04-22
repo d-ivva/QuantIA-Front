@@ -9,7 +9,7 @@ const INITIAL_STATE = {
   direction: "expense",
   amount: "0,00",
   description: "",
-  transactionDate: new Date().toISOString().split("T")[0],
+  transactionDate: new Date().toLocaleDateString("en-CA"),
   isInstallment: false,
   installmentTotal: "",
 };
@@ -21,6 +21,10 @@ function formatCurrencyInput(value) {
   return number.toLocaleString("pt-BR", {
     minimumFractionDigits: 2,
   });
+}
+
+function parseCurrency(value) {
+  return Number(value.replace(/\./g, "").replace(",", "."));
 }
 
 function TransactionFormModal({
@@ -35,14 +39,26 @@ function TransactionFormModal({
   const [form, setForm] = useState(INITIAL_STATE);
   const [errors, setErrors] = useState({});
 
+  const isEditingInstallment = editing?.isInstallment;
+
   useEffect(() => {
     if (isOpen) {
       if (editing) {
+        // ✅ MAPEAMENTO MANUAL (SEM ...editing)
         setForm({
-          ...editing,
+          accountId: editing.accountId,
+          categoryId: editing.categoryId,
+          transactionTypeId: editing.transactionTypeId,
+          direction: editing.direction,
           amount: editing.amount.toLocaleString("pt-BR", {
             minimumFractionDigits: 2,
           }),
+          description: editing.description || "",
+          transactionDate: editing.transactionDate
+            ? editing.transactionDate.split("T")[0]
+            : "",
+          isInstallment: editing.isInstallment,
+          installmentTotal: editing.installmentTotal || "",
         });
       } else {
         setForm(INITIAL_STATE);
@@ -55,7 +71,6 @@ function TransactionFormModal({
   const setField = (field, value) => {
     setForm((prev) => ({ ...prev, [field]: value }));
 
-    // remove erro ao digitar
     setErrors((prev) => ({
       ...prev,
       [field]: null,
@@ -65,31 +80,25 @@ function TransactionFormModal({
   const validate = () => {
     const newErrors = {};
 
-    if (!form.transactionTypeId) {
+    if (!form.transactionTypeId)
       newErrors.transactionTypeId = "Selecione o tipo de transação";
-    }
 
-    if (!form.accountId) {
+    if (!form.accountId)
       newErrors.accountId = "Selecione uma conta";
-    }
 
-    const amount = Number(form.amount.replace(",", "."));
-    if (!amount || amount <= 0) {
-      newErrors.amount = "Informe um valor válido";
-    }
-
-    if (!form.transactionDate) {
-      newErrors.transactionDate = "Informe a data";
-    }
-
-    if (form.isInstallment) {
-      if (!form.installmentTotal || form.installmentTotal < 2) {
-        newErrors.installmentTotal = "Mínimo de 2 parcelas";
-      }
-    }
-
-    if (!form.categoryId) {
+    if (!form.categoryId)
       newErrors.categoryId = "Selecione uma categoria";
+
+    const amount = parseCurrency(form.amount);
+    if (!amount || amount <= 0)
+      newErrors.amount = "Informe um valor válido";
+
+    if (!form.transactionDate)
+      newErrors.transactionDate = "Informe a data";
+
+    if (form.isInstallment && !isEditingInstallment) {
+      if (!form.installmentTotal || form.installmentTotal < 2)
+        newErrors.installmentTotal = "Mínimo de 2 parcelas";
     }
 
     setErrors(newErrors);
@@ -101,15 +110,21 @@ function TransactionFormModal({
 
     if (!validate()) return;
 
-    const amount = Number(form.amount.replace(",", "."));
+    const amount = parseCurrency(form.amount);
 
+    // ✅ PAYLOAD LIMPO (SEM ...form)
     const payload = {
-      ...form,
-      amount,
       accountId: Number(form.accountId),
-      categoryId: form.categoryId ? Number(form.categoryId) : null,
+      categoryId: Number(form.categoryId),
       transactionTypeId: Number(form.transactionTypeId),
-      transactionDate: new Date(form.transactionDate).toISOString(),
+      amount,
+      description: form.description,
+      direction: form.direction,
+      transactionDate: form.transactionDate,
+      isInstallment: form.isInstallment,
+      installmentTotal: form.installmentTotal
+        ? Number(form.installmentTotal)
+        : null,
     };
 
     if (editing) payload.id = editing.id;
@@ -119,10 +134,11 @@ function TransactionFormModal({
 
   const getInputClass = (field) =>
     `w-full px-3 py-2.5 text-sm border rounded-lg bg-white transition outline-none
-     ${errors[field]
-      ? "border-red-500 focus:ring-red-500 focus:border-red-500"
-      : "border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-    }`;
+     ${
+       errors[field]
+         ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+         : "border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+     }`;
 
   return (
     <Modal
@@ -212,6 +228,7 @@ function TransactionFormModal({
             </p>
           )}
         </div>
+
         {/* VALOR */}
         <div>
           <label className="text-sm font-medium mb-1 block">Valor</label>
@@ -230,12 +247,23 @@ function TransactionFormModal({
           )}
         </div>
 
+        {/* DESCRIÇÃO */}
+        <div>
+          <label className="text-sm font-medium mb-1 block">Descrição</label>
+          <input
+            value={form.description}
+            onChange={(e) => setField("description", e.target.value)}
+            className={getInputClass("description")}
+          />
+        </div>
+
         {/* DATA */}
         <div>
           <label className="text-sm font-medium mb-1 block">Data</label>
           <input
             type="date"
             value={form.transactionDate}
+            disabled={isEditingInstallment}
             onChange={(e) => setField("transactionDate", e.target.value)}
             className={getInputClass("transactionDate")}
           />
@@ -248,8 +276,8 @@ function TransactionFormModal({
         </div>
 
         {/* PARCELADO */}
-        {form.direction === "expense" && (
-          <div className="border rounded-xl p-4 bg-gray-50 transition-all">
+        {!isEditingInstallment && form.direction === "expense" && (
+          <div className="border rounded-xl p-4 bg-gray-50">
             <label className="flex items-center justify-between cursor-pointer">
               <span className="font-medium">Compra parcelada</span>
 
@@ -267,10 +295,7 @@ function TransactionFormModal({
               </div>
             </label>
 
-            <div
-              className={`transition-all duration-300 overflow-hidden ${form.isInstallment ? "max-h-40 mt-3" : "max-h-0"
-                }`}
-            >
+            {form.isInstallment && (
               <input
                 type="number"
                 placeholder="Número de parcelas"
@@ -278,15 +303,15 @@ function TransactionFormModal({
                 onChange={(e) =>
                   setField("installmentTotal", e.target.value)
                 }
-                className={`${getInputClass("installmentTotal")} mt-2`}
+                className={`${getInputClass("installmentTotal")} mt-3`}
               />
+            )}
 
-              {errors.installmentTotal && (
-                <p className="text-xs text-red-500 mt-1">
-                  {errors.installmentTotal}
-                </p>
-              )}
-            </div>
+            {errors.installmentTotal && (
+              <p className="text-xs text-red-500 mt-1">
+                {errors.installmentTotal}
+              </p>
+            )}
           </div>
         )}
 
@@ -302,7 +327,7 @@ function TransactionFormModal({
 
           <button
             type="submit"
-            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg font-semibold transition"
+            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg font-semibold"
           >
             Salvar
           </button>
