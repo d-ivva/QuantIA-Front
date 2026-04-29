@@ -38,7 +38,7 @@ function CategoriesPage() {
       const data = await getCategories();
       setCategories(data);
     } catch (err) {
-      toast.error("Error loading categories");
+      toast.error("Erro ao carregar as categorias");
       console.error(err);
     } finally {
       setLoading(false);
@@ -71,17 +71,17 @@ function CategoriesPage() {
         return Object.values(err.response.data.errors).flat().join(" | ");
       }
     }
-    return err.message || "Error saving category";
+    return err.message || "Erro ao salvar categoria";
   };
 
   const handleSave = async (data) => {
     try {
       if (editing) {
         await updateCategory(editing.id, data);
-        toast.success("Category updated successfully");
+        toast.success("Categoria atualizada com sucesso");
       } else {
         await createCategory(data);
-        toast.success("Category created successfully");
+        toast.success("Categoria criada com sucesso");
       }
 
       setIsFormOpen(false);
@@ -100,7 +100,7 @@ function CategoriesPage() {
   const handleDelete = async () => {
     try {
       await deleteCategory(deleting.id);
-      toast.success("Category deleted successfully");
+      toast.success("Categoria deletada com sucesso");
 
       setDeleting(null);
       setIsDeleteOpen(false);
@@ -117,10 +117,10 @@ function CategoriesPage() {
         <div>
           <div className="flex items-center gap-2">
             <Tags className="w-5 h-5 text-blue-600" />
-            <h1 className="text-2xl font-semibold text-gray-800">Categories</h1>
+            <h1 className="text-2xl font-semibold text-gray-800">Categorias</h1>
           </div>
           <p className="text-sm text-gray-500">
-            Manage your transaction categories
+            Gerencie suas categorias
           </p>
         </div>
 
@@ -138,7 +138,7 @@ function CategoriesPage() {
             className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 shadow-sm"
           >
             <Plus className="w-4 h-4" />
-            New Category
+            Nova Categoria
           </button>
         </div>
       </div>
@@ -146,7 +146,7 @@ function CategoriesPage() {
       {/* SUMMARY */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 shadow-sm">
-          <p className="text-xs text-blue-700">Total Categories</p>
+          <p className="text-xs text-blue-700">Total de Categorias</p>
           <p className="text-xl font-bold text-blue-700">
             {categories.length}
           </p>

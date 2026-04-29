@@ -31,8 +31,8 @@ function CategoryFormModal({ isOpen, onClose, editing, onSave }) {
 
   const validate = () => {
     const newErrors = {};
-    if (!form.name.trim()) newErrors.name = "Category name is required";
-    if (!form.color) newErrors.color = "Color is required";
+    if (!form.name.trim()) newErrors.name = "O nome da categoria é obrigatório";
+    if (!form.color) newErrors.color = "A cor da categoria é obrigatória";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -64,15 +64,15 @@ function CategoryFormModal({ isOpen, onClose, editing, onSave }) {
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={editing ? "Edit Category" : "New Category"}
+      title={editing ? "Editar Categoria" : "Nova Categoria"}
     >
       <form onSubmit={handleSubmit} className="space-y-5">
         {/* NAME */}
         <div>
-          <label className="text-sm font-medium mb-1 block">Name</label>
+          <label className="text-sm font-medium mb-1 block">Nome</label>
           <input
             type="text"
-            placeholder="Ex: Food"
+            placeholder="Exemplo: Transporte"
             value={form.name}
             onChange={(e) => setField("name", e.target.value)}
             className={getInputClass("name")}
@@ -108,14 +108,14 @@ function CategoryFormModal({ isOpen, onClose, editing, onSave }) {
             onClick={onClose}
             className="flex-1 bg-gray-100 hover:bg-gray-200 py-2.5 rounded-lg transition-colors"
           >
-            Cancel
+            Cancelar
           </button>
 
           <button
             type="submit"
             className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg font-semibold transition-colors"
           >
-            Save
+            Salvar
           </button>
         </div>
       </form>

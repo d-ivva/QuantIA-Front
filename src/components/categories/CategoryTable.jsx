@@ -20,7 +20,7 @@ function CategoryTable({
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input
             type="text"
-            placeholder="Search category by name..."
+            placeholder="Buscar categoria por nome..."
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
             className="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow"
@@ -42,8 +42,8 @@ function CategoryTable({
           <InboxIcon className="w-12 h-12 mb-3" />
           <p className="text-sm font-medium">
             {search
-              ? "No categories found for this search."
-              : "No categories registered yet."}
+              ? "A busca não retornou resultados."
+              : "Nenhuma categoria foi registrada ainda."}
           </p>
         </div>
       ) : (
@@ -51,13 +51,13 @@ function CategoryTable({
           <thead>
             <tr className="bg-gray-50 border-b border-gray-200">
               <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">
-                Name / Preview
+                Nome
               </th>
               <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase w-32">
-                Color (Hex)
+                Cor (Hex)
               </th>
               <th className="px-6 py-3 text-center text-xs font-semibold text-gray-500 uppercase w-32">
-                Actions
+                Ações
               </th>
             </tr>
           </thead>
