@@ -7,27 +7,27 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
-export const listarCategorias = async () => {
+export const getCategories = async () => {
   const response = await api.get('/Categories');
   return response.data;
 };
 
-export const buscarCategoriaPorId = async (id) => {
+export const getCategory = async (id) => {
   const response = await api.get(`/Categories/${id}`);
   return response.data;
 };
 
-export const criarCategoria = async (categoria) => {
-  const response = await api.post('/Categories', categoria);
+export const createCategory = async (category) => {
+  const response = await api.post('/Categories', category);
   return response.data;
 };
 
-export const atualizarCategoria = async (id, categoria) => {
-  const response = await api.put(`/Categories/${id}`, categoria);
+export const updateCategory = async (id, category) => {
+  const response = await api.put(`/Categories/${id}`, category);
   return response.data;
 };
 
-export const deletarCategoria = async (id) => {
+export const deleteCategory = async (id) => {
   const response = await api.delete(`/Categories/${id}`);
   return response.data;
 };
