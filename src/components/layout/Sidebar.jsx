@@ -3,9 +3,9 @@ import { Wallet, ArrowLeftRight, CreditCard, Tag, BarChart2 } from 'lucide-react
 
 const menuItems = [
   { to: '/transactions', label: 'Transações', icon: ArrowLeftRight, enabled: true },
-  { to: '/contas',    label: 'Contas',      icon: CreditCard,     enabled: false },
-  { to: '/categorias',label: 'Categorias',  icon: Tag,            enabled: false },
-  { to: '/relatorios',label: 'Relatórios',  icon: BarChart2,      enabled: false },
+  { to: '/accounts',    label: 'Contas',      icon: CreditCard,     enabled: true },
+  { to: '/categories',label: 'Categorias',  icon: Tag,            enabled: false },
+  { to: '/reports',label: 'Relatórios',  icon: BarChart2,      enabled: false },
 ];
 
 function Sidebar() {

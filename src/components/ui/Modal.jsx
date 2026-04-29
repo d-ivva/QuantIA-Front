@@ -11,6 +11,7 @@ const variants = {
   default: "bg-gray-800",
   income: "bg-emerald-600",
   expense: "bg-red-500",
+  primary: "bg-blue-600",
 };
 
 function Modal({

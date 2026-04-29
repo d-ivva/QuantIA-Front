@@ -36,6 +36,26 @@ function TransactionTable({
     return date.split("T")[0].split("-").reverse().join("/");
   };
 
+  const getContrastYIQ = (hexcolor) => {
+    if (!hexcolor) return "black";
+    const hex = hexcolor.replace("#", "");
+    if (hex.length !== 6 && hex.length !== 3) return "black";
+    
+    let r, g, b;
+    if (hex.length === 3) {
+      r = parseInt(hex.substring(0, 1) + hex.substring(0, 1), 16);
+      g = parseInt(hex.substring(1, 2) + hex.substring(1, 2), 16);
+      b = parseInt(hex.substring(2, 3) + hex.substring(2, 3), 16);
+    } else {
+      r = parseInt(hex.substring(0, 2), 16);
+      g = parseInt(hex.substring(2, 4), 16);
+      b = parseInt(hex.substring(4, 6), 16);
+    }
+    
+    const yiq = (r * 299 + g * 587 + b * 114) / 1000;
+    return yiq >= 128 ? "black" : "white";
+  };
+
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
       {/* BUSCA */}
@@ -130,16 +150,31 @@ function TransactionTable({
                 </td>
 
                 {/* CONTA */}
-                <td className="px-6 py-4 text-sm text-gray-600">
-                  {t.account?.name || "—"}
+                <td className="px-6 py-4">
+                  {t.account ? (
+                    <span
+                      className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium"
+                      style={{ 
+                        backgroundColor: t.account.color || '#f3f4f6',
+                        color: t.account.color ? getContrastYIQ(t.account.color) : '#374151'
+                      }}
+                    >
+                      {t.account.name}
+                    </span>
+                  ) : (
+                    <span className="text-sm text-gray-400">—</span>
+                  )}
                 </td>
 
                 {/* CATEGORIA */}
                 <td className="px-6 py-4">
                   {t.category ? (
                     <span
-                      className="inline-flex items-center px-2 py-0.5 rounded text-xs text-white"
-                      style={{ backgroundColor: t.category.color }}
+                      className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium"
+                      style={{ 
+                        backgroundColor: t.category.color || '#f3f4f6',
+                        color: t.category.color ? getContrastYIQ(t.category.color) : '#374151'
+                      }}
                     >
                       {t.category.name}
                     </span>
