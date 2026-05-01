@@ -3,8 +3,9 @@ import { Wallet, ArrowLeftRight, CreditCard, Tag, BarChart2 } from 'lucide-react
 
 const menuItems = [
   { to: '/transactions', label: 'Transações', icon: ArrowLeftRight, enabled: true },
+  { to: '/relatorios',label: 'Relatórios',  icon: BarChart2,      enabled: false },
   { to: '/accounts',    label: 'Contas',      icon: CreditCard,     enabled: true },
-  { to: '/categories',label: 'Categorias',  icon: Tag,            enabled: false },
+  { to: '/categories',label: 'Categorias',  icon: Tag,            enabled: true },
   { to: '/reports',label: 'Relatórios',  icon: BarChart2,      enabled: false },
 ];
 
