@@ -67,14 +67,21 @@ function CategoryFormModal({ isOpen, onClose, editing, onSave }) {
       title={editing ? "Editar Categoria" : "Nova Categoria"}
     >
       <form onSubmit={handleSubmit} className="space-y-5">
+        <div className="flex justify-between items-end mb-1">
+            <label className="text-sm font-medium block">Nome</label>
+            <span className="text-xs text-gray-400">
+              {form.name.length}/30
+            </span>
+          </div>
+
         {/* NAME */}
         <div>
-          <label className="text-sm font-medium mb-1 block">Nome</label>
           <input
             type="text"
             placeholder="Exemplo: Transporte"
             value={form.name}
             onChange={(e) => setField("name", e.target.value)}
+            maxLength={30}
             className={getInputClass("name")}
           />
           {errors.name && (

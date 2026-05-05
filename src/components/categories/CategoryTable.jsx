@@ -1,5 +1,19 @@
 import { Search, Pencil, Trash2, InboxIcon } from "lucide-react";
 
+function getContrastTextColor(hexColor) {
+  if (!hexColor) return "#FFFFFF";
+
+  const hex = hexColor.replace("#", "");
+
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+
+  const yiq = (r * 299 + g * 587 + b * 114) / 1000;
+
+  return yiq >= 128 ? "#111827" : "#FFFFFF";
+}
+
 function CategoryTable({
   categories,
   search,
@@ -69,7 +83,9 @@ function CategoryTable({
                 <td className="px-6 py-4">
                   <span
                     className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium text-white shadow-sm"
-                    style={{ backgroundColor: c.color }}
+                    style={{ 
+                      backgroundColor: c.color,
+                      color: getContrastTextColor(c.color)}}
                   >
                     {c.name}
                   </span>
