@@ -5,6 +5,8 @@ import AccountPage from './components/accounts/AccountPage';
 import CategoriesPage from "./components/categories/CategoriesPage";
 import TransactionTypePage from "./components/transactionTypes/TransactionTypePage";
 import MonthlyBudgetsPage from "./components/monthlyBudgets/MonthlyBudgetsPage";
+import AiChatPage from "./components/aiChat/AiChatPage";
+import AiConfigPage from "./components/aiConfig/AiConfigPage";
 
 function App() {
   return (
@@ -16,6 +18,8 @@ function App() {
         <Route path="/transaction-types" element={<TransactionTypePage />} />
         <Route path="/categories" element={<CategoriesPage />} />
         <Route path="/monthly-budgets" element={<MonthlyBudgetsPage />} />
+        <Route path="/ai-chat" element={<AiChatPage />} />
+        <Route path="/ai-config" element={<AiConfigPage />} />
       </Route>
     </Routes>
   );
