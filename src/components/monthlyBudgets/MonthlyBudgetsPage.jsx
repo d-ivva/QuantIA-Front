@@ -13,6 +13,7 @@ import { useToast } from "../../hooks/useToast";
 import MonthlyBudgetTable from "./MonthlyBudgetTable";
 import MonthlyBudgetFormModal from "./MonthlyBudgetFormModal";
 import MonthlyBudgetDeleteDialog from "./MonthlyBudgetDeleteDialog";
+import MonthlyBudgetReport from "./MonthlyBudgetReport";
 
 const formatCurrency = (value) =>
   new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
@@ -21,6 +22,7 @@ function MonthlyBudgetsPage() {
   const [budgets, setBudgets] = useState([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+  const [reportKey, setReportKey] = useState(0);
 
   const [editing, setEditing] = useState(null);
   const [deleting, setDeleting] = useState(null);
@@ -80,6 +82,7 @@ function MonthlyBudgetsPage() {
       setIsFormOpen(false);
       setEditing(null);
       await loadData();
+      setReportKey((k) => k + 1);
     } catch (err) {
       toast.error(getErrorMessage(err));
     }
@@ -97,6 +100,7 @@ function MonthlyBudgetsPage() {
       setDeleting(null);
       setIsDeleteOpen(false);
       await loadData();
+      setReportKey((k) => k + 1);
     } catch (err) {
       toast.error(getErrorMessage(err));
     }
@@ -179,6 +183,9 @@ function MonthlyBudgetsPage() {
           </div>
         </div>
       </div>
+
+      {/* RELATÓRIO */}
+      <MonthlyBudgetReport refreshKey={reportKey} />
 
       {/* TABELA */}
       <MonthlyBudgetTable

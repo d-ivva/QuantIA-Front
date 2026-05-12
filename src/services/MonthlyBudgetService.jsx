@@ -36,3 +36,8 @@ export const deleteMonthlyBudget = async (id) => {
   const response = await api.delete(`/monthlybudgets/${id}`);
   return response.data;
 };
+
+export const getBudgetReport = async (month, year) => {
+  const response = await api.get(`/monthlybudgets/report/${month}/${year}`);
+  return response.data;
+};
