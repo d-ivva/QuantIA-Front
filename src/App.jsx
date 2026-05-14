@@ -7,6 +7,7 @@ import TransactionTypePage from "./components/transactionTypes/TransactionTypePa
 import MonthlyBudgetsPage from "./components/monthlyBudgets/MonthlyBudgetsPage";
 import AiChatPage from "./components/aiChat/AiChatPage";
 import AiConfigPage from "./components/aiConfig/AiConfigPage";
+import ReportsPage from "./components/reports/ReportsPage";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/monthly-budgets" element={<MonthlyBudgetsPage />} />
         <Route path="/ai-chat" element={<AiChatPage />} />
         <Route path="/ai-config" element={<AiConfigPage />} />
+        <Route path="/reports" element={<ReportsPage />} />
       </Route>
     </Routes>
   );

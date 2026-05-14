@@ -3,12 +3,11 @@ import { Wallet, ArrowLeftRight, CreditCard, Tag, BarChart2, Settings2, Target, 
 
 const menuItems = [
   { to: '/transactions',      label: 'Transações',      icon: ArrowLeftRight, enabled: true  },
-  { to: '/relatorios',        label: 'Relatórios',      icon: BarChart2,      enabled: false },
+  { to: '/reports',           label: 'Relatórios',      icon: BarChart2,      enabled: true },
   { to: '/accounts',          label: 'Contas',          icon: CreditCard,     enabled: true  },
   { to: '/categories',        label: 'Categorias',      icon: Tag,            enabled: true  },
   { to: '/transaction-types', label: 'Tipos',           icon: Settings2,      enabled: true  },
   { to: '/monthly-budgets',   label: 'Limite de Gastos', icon: Target,        enabled: true  },
-  { to: '/reports',           label: 'Relatórios',      icon: BarChart2,      enabled: false },
 ];
 
 const aiItems = [
