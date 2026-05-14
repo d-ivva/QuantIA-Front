@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { BarChart2 } from "lucide-react";
 import { useToast } from "../../hooks/useToast"; 
 import { getBudgetReport } from "../../services/MonthlyBudgetService";
 import { getTransactions } from "../../services/TransactionService";
@@ -49,10 +50,13 @@ function ReportsPage() {
 
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6">
-      {/* CABEÇALHO & FILTROS */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      {/* HEADER (Idêntico ao padrão de TransactionsPage) */}
+      <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Relatórios</h1>
+          <div className="flex items-center gap-2">
+            <BarChart2 className="w-5 h-5 text-blue-600" />
+            <h1 className="text-2xl font-semibold text-gray-800">Relatórios</h1>
+          </div>
           <p className="text-sm text-gray-500">
             Acompanhe seu fluxo de caixa, distribuição de despesas e projeções financeiras.
           </p>
@@ -75,9 +79,8 @@ function ReportsPage() {
         </div>
       ) : (
         <>
-          {/* CARDS SUPERIORES & PROGRESSO DE META */}
+          {/* CARDS SUPERIORES */}
           <ReportsSummary 
-            budgetReport={budgetReport} 
             transactions={transactions} 
           />
 
