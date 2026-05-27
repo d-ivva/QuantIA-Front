@@ -1,14 +1,15 @@
 import { NavLink } from 'react-router-dom';
 import { Wallet, ArrowLeftRight, CreditCard, Tag, BarChart2, Settings2, Target, Bot, KeyRound } from 'lucide-react';
+import UserProfileMenu from '../profile/UserProfileMenu';
 
 const menuItems = [
-  { to: '/transactions',      label: 'Transações',      icon: ArrowLeftRight, enabled: true  },
-  { to: '/relatorios',        label: 'Relatórios',      icon: BarChart2,      enabled: false },
-  { to: '/accounts',          label: 'Contas',          icon: CreditCard,     enabled: true  },
-  { to: '/categories',        label: 'Categorias',      icon: Tag,            enabled: true  },
-  { to: '/transaction-types', label: 'Tipos',           icon: Settings2,      enabled: true  },
-  { to: '/monthly-budgets',   label: 'Limite de Gastos', icon: Target,        enabled: true  },
-  { to: '/reports',           label: 'Relatórios',      icon: BarChart2,      enabled: false },
+  { to: '/transactions',      label: 'Transações',       icon: ArrowLeftRight, enabled: true  },
+  { to: '/relatorios',        label: 'Relatórios',       icon: BarChart2,      enabled: false },
+  { to: '/accounts',          label: 'Contas',           icon: CreditCard,     enabled: true  },
+  { to: '/categories',        label: 'Categorias',       icon: Tag,            enabled: true  },
+  { to: '/transaction-types', label: 'Tipos',            icon: Settings2,      enabled: true  },
+  { to: '/monthly-budgets',   label: 'Limite de Gastos', icon: Target,         enabled: true  },
+  { to: '/reports',           label: 'Relatórios',       icon: BarChart2,      enabled: false },
 ];
 
 const aiItems = [
@@ -22,9 +23,7 @@ function NavItem({ item }) {
       <span className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 cursor-not-allowed">
         <item.icon className="w-5 h-5" />
         {item.label}
-        <span className="ml-auto text-[10px] bg-gray-700 text-gray-400 px-1.5 py-0.5 rounded">
-          Em breve
-        </span>
+        <span className="ml-auto text-[10px] bg-gray-700 text-gray-400 px-1.5 py-0.5 rounded">Em breve</span>
       </span>
     );
   }
@@ -33,9 +32,7 @@ function NavItem({ item }) {
       to={item.to}
       className={({ isActive }) =>
         `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-          isActive
-            ? 'bg-emerald-600 text-white'
-            : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+          isActive ? 'bg-emerald-600 text-white' : 'text-gray-300 hover:bg-gray-800 hover:text-white'
         }`
       }
     >
@@ -64,36 +61,22 @@ function Sidebar() {
       {/* Navegação */}
       <nav className="flex-1 px-3 py-4 space-y-4 overflow-y-auto">
         <div>
-          <p className="px-3 mb-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-            Menu
-          </p>
+          <p className="px-3 mb-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Menu</p>
           <ul className="space-y-1">
-            {menuItems.map((item) => (
-              <li key={item.to}>
-                <NavItem item={item} />
-              </li>
-            ))}
+            {menuItems.map(item => <li key={item.to}><NavItem item={item} /></li>)}
           </ul>
         </div>
-
         <div className="border-t border-gray-800 pt-4">
-          <p className="px-3 mb-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-            QuantIA IA
-          </p>
+          <p className="px-3 mb-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">QuantIA IA</p>
           <ul className="space-y-1">
-            {aiItems.map((item) => (
-              <li key={item.to}>
-                <NavItem item={item} />
-              </li>
-            ))}
+            {aiItems.map(item => <li key={item.to}><NavItem item={item} /></li>)}
           </ul>
         </div>
       </nav>
 
-      {/* Rodapé */}
-      <div className="px-6 py-4 border-t border-gray-700">
-        <p className="text-xs text-gray-500">Desenv. Sistemas Web</p>
-        <p className="text-xs text-gray-600">Prof. Matheus Cataneo</p>
+      {/* Perfil do usuário (interativo) */}
+      <div className="px-3 py-3 border-t border-gray-800 space-y-1">
+        <UserProfileMenu />
       </div>
     </aside>
   );
