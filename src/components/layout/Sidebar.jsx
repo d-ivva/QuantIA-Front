@@ -1,15 +1,18 @@
 import { NavLink } from 'react-router-dom';
-import { Wallet, ArrowLeftRight, CreditCard, Tag, BarChart2, Settings2, Target, Bot, KeyRound } from 'lucide-react';
+import {
+  ArrowLeftRight, CreditCard, Tag, BarChart2,
+  Settings2, Target, Bot, KeyRound, Sun, Moon,
+} from 'lucide-react';
 import UserProfileMenu from '../profile/UserProfileMenu';
+import { useTheme } from '../../contexts/ThemeContext';
 
 const menuItems = [
-
-  { to: '/transactions',      label: 'Transações',       icon: ArrowLeftRight, enabled: true  },
-  { to: '/reports',        label: 'Relatórios',       icon: BarChart2,      enabled: true },
-  { to: '/accounts',          label: 'Contas',           icon: CreditCard,     enabled: true  },
-  { to: '/categories',        label: 'Categorias',       icon: Tag,            enabled: true  },
-  { to: '/transaction-types', label: 'Tipos',            icon: Settings2,      enabled: true  },
-  { to: '/monthly-budgets',   label: 'Limite de Gastos', icon: Target,         enabled: true  },
+  { to: '/transactions',      label: 'Transações',       icon: ArrowLeftRight, enabled: true },
+  { to: '/reports',           label: 'Relatórios',       icon: BarChart2,      enabled: true },
+  { to: '/accounts',          label: 'Contas',           icon: CreditCard,     enabled: true },
+  { to: '/categories',        label: 'Categorias',       icon: Tag,            enabled: true },
+  { to: '/transaction-types', label: 'Tipos',            icon: Settings2,      enabled: true },
+  { to: '/monthly-budgets',   label: 'Limite de Gastos', icon: Target,         enabled: true },
 ];
 
 const aiItems = [
@@ -20,62 +23,92 @@ const aiItems = [
 function NavItem({ item }) {
   if (!item.enabled) {
     return (
-      <span className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 cursor-not-allowed">
-        <item.icon className="w-5 h-5" />
+      <span className="qs-disabled">
+        <item.icon />
         {item.label}
-        <span className="ml-auto text-[10px] bg-gray-700 text-gray-400 px-1.5 py-0.5 rounded">Em breve</span>
+        <span className="qs-badge">Em breve</span>
       </span>
     );
   }
   return (
     <NavLink
       to={item.to}
-      className={({ isActive }) =>
-        `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-          isActive ? 'bg-emerald-600 text-white' : 'text-gray-300 hover:bg-gray-800 hover:text-white'
-        }`
-      }
+      className={({ isActive }) => `qs-link${isActive ? ' active' : ''}`}
     >
-      <item.icon className="w-5 h-5" />
+      <item.icon />
       {item.label}
     </NavLink>
   );
 }
 
-function Sidebar() {
+/* Logomark — stylised Q with sparkline accent */
+function LogoMark() {
   return (
-    <aside className="w-64 bg-gray-900 text-white flex flex-col flex-shrink-0">
+    <div className="qs-mark">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+        {/* Circle body */}
+        <circle cx="8.5" cy="8.5" r="5.5" stroke="rgba(255,255,255,0.9)" strokeWidth="1.6" fill="none" />
+        {/* Magnifier handle */}
+        <line x1="12.5" y1="12.5" x2="16" y2="16" stroke="rgba(255,255,255,0.75)" strokeWidth="1.6" strokeLinecap="round" />
+        {/* Sparkline inside Q */}
+        <polyline
+          points="5.5,10 7,7.5 9,9.5 11.5,6.5"
+          stroke="rgba(255,255,255,0.95)"
+          strokeWidth="1.3"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          fill="none"
+        />
+      </svg>
+    </div>
+  );
+}
+
+function Sidebar() {
+  const { theme, toggle } = useTheme();
+
+  return (
+    <aside className="qs">
       {/* Logo */}
-      <div className="px-6 py-5 border-b border-gray-700">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 bg-emerald-600 rounded-lg flex items-center justify-center">
-            <Wallet className="w-5 h-5 text-white" />
-          </div>
-          <div>
-            <h1 className="text-lg font-bold leading-tight">QuantIA</h1>
-            <p className="text-xs text-gray-400">Controle de Gastos</p>
-          </div>
+      <div className="qs-logo">
+        <LogoMark />
+        <div className="qs-wordmark">
+          <span className="qs-wordmark-name">QuantIA</span>
+          <span className="qs-wordmark-tag">Controle Financeiro</span>
         </div>
       </div>
 
-      {/* Navegação */}
-      <nav className="flex-1 px-3 py-4 space-y-4 overflow-y-auto">
-        <div>
-          <p className="px-3 mb-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Menu</p>
-          <ul className="space-y-1">
-            {menuItems.map(item => <li key={item.to}><NavItem item={item} /></li>)}
-          </ul>
+      {/* Navigation */}
+      <nav className="qs-nav" aria-label="Navegação principal">
+        <div className="qs-section">
+          <p className="qs-section-title">Menu</p>
+          {menuItems.map(item => (
+            <NavItem key={item.to} item={item} />
+          ))}
         </div>
-        <div className="border-t border-gray-800 pt-4">
-          <p className="px-3 mb-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">QuantIA IA</p>
-          <ul className="space-y-1">
-            {aiItems.map(item => <li key={item.to}><NavItem item={item} /></li>)}
-          </ul>
+
+        <div className="qs-sep" role="separator" />
+
+        <div className="qs-section">
+          <p className="qs-section-title">QuantIA IA</p>
+          {aiItems.map(item => (
+            <NavItem key={item.to} item={item} />
+          ))}
         </div>
       </nav>
 
-      {/* Perfil do usuário (interativo) */}
-      <div className="px-3 py-3 border-t border-gray-800 space-y-1">
+      {/* Footer */}
+      <div className="qs-foot">
+        <button
+          onClick={toggle}
+          className="qs-theme-btn"
+          aria-label={theme === 'dark' ? 'Alternar para modo claro' : 'Alternar para modo escuro'}
+        >
+          {theme === 'dark'
+            ? <><Sun size={13} /><span>Modo Claro</span></>
+            : <><Moon size={13} /><span>Modo Escuro</span></>
+          }
+        </button>
         <UserProfileMenu />
       </div>
     </aside>

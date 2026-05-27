@@ -7,21 +7,14 @@ const sizes = {
   lg: "max-w-2xl",
 };
 
-const variants = {
-  default: "bg-gray-800",
-  income: "bg-emerald-600",
-  expense: "bg-red-500",
-  primary: "bg-blue-600",
+const headerMap = {
+  default: { head: "",           bar: "q-bar-default" },
+  income:  { head: "q-mh-income",  bar: "q-bar-income"  },
+  expense: { head: "q-mh-expense", bar: "q-bar-expense" },
+  primary: { head: "q-mh-primary", bar: "q-bar-primary" },
 };
 
-function Modal({
-  isOpen,
-  onClose,
-  title,
-  children,
-  size = "md",
-  variant = "default",
-}) {
+function Modal({ isOpen, onClose, title, children, size = "md", variant = "default" }) {
   const modalRef = useRef(null);
   const [show, setShow] = useState(false);
 
@@ -29,50 +22,51 @@ function Modal({
     if (isOpen) {
       setShow(true);
       document.body.style.overflow = "hidden";
-
-      setTimeout(() => {
-        modalRef.current?.focus();
-      }, 100);
+      setTimeout(() => { modalRef.current?.focus(); }, 100);
     } else {
       document.body.style.overflow = "";
-      setTimeout(() => setShow(false), 200);
+      setTimeout(() => setShow(false), 220);
     }
   }, [isOpen]);
 
   if (!isOpen && !show) return null;
 
+  const { head, bar } = headerMap[variant] ?? headerMap.default;
+
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center 
-      bg-black/40 backdrop-blur-sm transition-opacity duration-200
-      ${isOpen ? "opacity-100" : "opacity-0"}`}
+      className="q-overlay"
+      style={{ opacity: isOpen ? 1 : 0 }}
       onClick={onClose}
+      aria-modal="true"
+      role="dialog"
+      aria-label={title}
     >
       <div
         ref={modalRef}
         tabIndex={-1}
-        onClick={(e) => e.stopPropagation()}
-        className={`bg-white w-full ${sizes[size]} mx-4 rounded-2xl shadow-2xl 
-        transform transition-all duration-200
-        ${isOpen ? "scale-100 opacity-100" : "scale-95 opacity-0"}
-        max-h-[90vh] flex flex-col`}
+        onClick={e => e.stopPropagation()}
+        className={`q-modal w-full ${sizes[size]} mx-4`}
+        style={{
+          transform: isOpen ? "scale(1) translateY(0)" : "scale(0.95) translateY(8px)",
+          opacity:   isOpen ? 1 : 0,
+        }}
       >
-        {/* HEADER DINÂMICO */}
-        <div
-          className={`flex items-center justify-between px-6 py-4 
-          text-white rounded-t-2xl ${variants[variant]}`}
-        >
-          <h2 className="text-lg font-semibold">{title}</h2>
-
+        {/* Header */}
+        <div className={`q-modal-head ${head}`}>
+          <div className={`q-modal-bar ${bar}`} aria-hidden="true" />
+          <h2 className="q-modal-title">{title}</h2>
           <button
             onClick={onClose}
-            className="hover:bg-white/20 rounded-lg p-1 transition"
+            className="q-modal-close"
+            aria-label="Fechar"
           >
-            <X className="w-5 h-5" />
+            <X size={13} />
           </button>
         </div>
 
-        <div className="p-6 overflow-y-auto">{children}</div>
+        {/* Body */}
+        <div className="q-modal-body">{children}</div>
       </div>
     </div>
   );
