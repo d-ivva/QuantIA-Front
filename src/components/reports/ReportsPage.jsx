@@ -259,8 +259,16 @@ function ReportsPage() {
       setRefAreaLeft(''); setRefAreaRight('');
       return;
     }
-    const l = Math.min(Number(refAreaLeft), Number(refAreaRight));
-    const r = Math.max(Number(refAreaLeft), Number(refAreaRight));
+    const l = Math.round(Math.min(Number(refAreaLeft), Number(refAreaRight)));
+    const r = Math.round(Math.max(Number(refAreaLeft), Number(refAreaRight)));
+    
+    // Evita dar zoom em um único dia (distância 0)
+    if (l === r) {
+      setRefAreaLeft('');
+      setRefAreaRight('');
+      return;
+    }
+
     setZoomLeft(l);
     setZoomRight(r);
     setRefAreaLeft('');
@@ -491,6 +499,7 @@ function ReportsPage() {
                   axisLine={false}
                   tickMargin={10}
                   allowDataOverflow
+                  allowDecimals={false}
                   domain={[zoomLeft, zoomRight]}
                   type="number"
                   label={{ value: `Dias do Mês: ${capitalizedMonth}`, position: 'bottom', fill: '#94a3b8', fontSize: 11, offset: 5 }}
