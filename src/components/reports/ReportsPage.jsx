@@ -173,7 +173,7 @@ function ReportsPage() {
     try {
       const [dash, annual] = await Promise.all([
         getDashboardData(currentMonth, currentYear, selectedAccountId),
-        getAnnualReport(currentYear)
+        getAnnualReport(currentYear, selectedAccountId)
       ]);
 
       if (dash && dash.dailyFlow) {
@@ -224,7 +224,7 @@ function ReportsPage() {
 
   const selectedAccountName = selectedAccountId
     ? (accounts.find(a => a.id === selectedAccountId)?.name ?? 'Conta')
-    : 'TODOS';
+    : 'Todos';
 
   // Dados cumulativos para o gráfico de Fluxo de Caixa
   const cumulativeFlow = dashboardData.dailyFlow.reduce((acc, d) => {
@@ -353,7 +353,7 @@ function ReportsPage() {
               className="text-sm font-medium text-gray-700 bg-transparent outline-none cursor-pointer"
               disabled={accountsLoading}
             >
-              <option value="">TODOS</option>
+              <option value="">Todos</option>
               {accounts.map(account => (
                 <option key={account.id} value={account.id}>
                   {account.name}
