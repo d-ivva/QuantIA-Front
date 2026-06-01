@@ -6,7 +6,8 @@ export const sendMessage = async (provider, sessionId, message) => {
 };
 
 export const clearChatHistory = async (sessionId) => {
-  await api.delete(`/aichat/historico/${sessionId}`);
+  const { data } = await api.delete(`/aichat/historico/${sessionId}`);
+  return data;
 };
 
 export const generateSessionId = () =>

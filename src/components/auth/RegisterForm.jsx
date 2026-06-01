@@ -77,7 +77,7 @@ export default function RegisterForm({ onSwitch }) {
         <AuthInput
           label="Nome completo" id="reg-name"
           value={name} onChange={e => setName(e.target.value)}
-          placeholder="Arthur Bauer" autoComplete="name"
+          placeholder="Insira seu nome" autoComplete="name"
         />
         <AuthInput
           label="E-mail" id="reg-email" type="email"

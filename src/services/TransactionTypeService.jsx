@@ -23,7 +23,7 @@ export const getTransactionType = async (id) => {
 export const createTransactionType = async (transactionType) => {
   const payload = { ...transactionType, direction: directionToApi(transactionType.direction) };
   const response = await api.post('/TransactionTypes', payload);
-  return normalizeType(response.data);
+  return response.data;
 };
 
 export const updateTransactionType = async (id, transactionType) => {

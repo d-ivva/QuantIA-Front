@@ -37,7 +37,7 @@ function AccountPage() {
       const data = await getAccounts();
       setAccounts(data);
     } catch (err) {
-      toast.error("Erro ao carregar contas");
+      toast.error(getErrorMessage(err, "Erro ao carregar contas"));
       console.error(err);
     } finally {
       setLoading(false);
@@ -54,7 +54,7 @@ function AccountPage() {
     setIsFormOpen(true);
   };
 
-  const getErrorMessage = (err) => {
+  const getErrorMessage = (err, fallback = "Erro inesperado") => {
     if (err.response?.data) {
       if (typeof err.response.data === "string") {
         return err.response.data;
@@ -69,24 +69,24 @@ function AccountPage() {
         return Object.values(err.response.data.errors).flat().join(" | ");
       }
     }
-    return err.message || "Erro ao salvar conta";
+    return err.message || fallback;
   };
 
   const handleSave = async (data) => {
     try {
+      let result;
       if (editing) {
-        await updateAccount(editing.id, data);
-        toast.success("Conta atualizada com sucesso");
+        result = await updateAccount(editing.id, data);
       } else {
-        await createAccount(data);
-        toast.success("Conta criada com sucesso");
+        result = await createAccount(data);
       }
 
+      toast.success(result?.message || "Operação realizada com sucesso");
       setIsFormOpen(false);
       setEditing(null);
       await loadData();
     } catch (err) {
-      toast.error(getErrorMessage(err));
+      toast.error(getErrorMessage(err, "Erro ao salvar conta"));
     }
   };
 
@@ -97,14 +97,14 @@ function AccountPage() {
 
   const handleDelete = async () => {
     try {
-      await deleteAccount(deleting.id);
-      toast.success("Conta excluída com sucesso");
+      const result = await deleteAccount(deleting.id);
+      toast.success(result?.message || "Conta excluída com sucesso");
 
       setDeleting(null);
       setIsDeleteOpen(false);
       await loadData();
     } catch (err) {
-      toast.error(getErrorMessage(err));
+      toast.error(getErrorMessage(err, "Erro ao excluir conta"));
     }
   };
 

@@ -1,5 +1,6 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import Layout from './components/layout/Layout';
+import HomePage from './components/home/HomePage';
 import Transactionpage from './components/transactions/TransactionPage';
 import AccountPage from './components/accounts/AccountPage';
 import CategoriesPage from "./components/categories/CategoriesPage";
@@ -13,7 +14,7 @@ function App() {
   return (
     <Routes>
       <Route element={<Layout />}>
-        <Route path="/" element={<Navigate to="/transactions" replace />} />
+        <Route path="/" element={<HomePage />} />
         <Route path="/transactions" element={<Transactionpage />} />
         <Route path="/accounts" element={<AccountPage />} />
         <Route path="/transaction-types" element={<TransactionTypePage />} />

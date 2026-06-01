@@ -42,45 +42,45 @@ function AiConfigPage() {
     try {
       setLoading(true);
       setConfigs(await getAiConfigs());
-    } catch {
-      toast.error('Erro ao carregar configurações de IA');
+    } catch (err) {
+      toast.error(getErrorMessage(err, 'Erro ao carregar configurações de IA'));
     } finally {
       setLoading(false);
     }
   };
 
-  const getErrorMessage = (err) => {
+  const getErrorMessage = (err, fallback = 'Erro inesperado') => {
     if (err.response?.data?.message) return err.response.data.message;
     if (typeof err.response?.data === 'string') return err.response.data;
-    return err.message || 'Erro ao salvar configuração';
+    return err.message || fallback;
   };
 
   const handleSave = async (data) => {
     try {
+      let result;
       if (editing) {
-        await updateAiConfig(editing.id, data);
-        toast.success('Chave atualizada com sucesso');
+        result = await updateAiConfig(editing.id, data);
       } else {
-        await createAiConfig(data);
-        toast.success('Configuração criada com sucesso');
+        result = await createAiConfig(data);
       }
+      toast.success(result?.message || 'Operação realizada com sucesso');
       setIsFormOpen(false);
       setEditing(null);
       await loadData();
     } catch (err) {
-      toast.error(getErrorMessage(err));
+      toast.error(getErrorMessage(err, 'Erro ao salvar configuração'));
     }
   };
 
   const handleDelete = async () => {
     try {
-      await deleteAiConfig(deleting.id);
-      toast.success('Configuração removida com sucesso');
+      const result = await deleteAiConfig(deleting.id);
+      toast.success(result?.message || 'Configuração removida com sucesso');
       setDeleting(null);
       setIsDeleteOpen(false);
       await loadData();
     } catch (err) {
-      toast.error(getErrorMessage(err));
+      toast.error(getErrorMessage(err, 'Erro ao remover configuração'));
     }
   };
 

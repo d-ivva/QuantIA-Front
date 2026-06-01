@@ -44,7 +44,7 @@ function AiConfigFormModal({ isOpen, onClose, editing, usedProviders, onSave }) 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Provedor de IA
+            Provedor de IA <span className="text-red-500">*</span>
           </label>
           <select
             value={provider}
@@ -62,7 +62,7 @@ function AiConfigFormModal({ isOpen, onClose, editing, usedProviders, onSave }) 
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Chave de API
+            Chave de API <span className="text-red-500">*</span>
           </label>
           <div className="relative">
             <input

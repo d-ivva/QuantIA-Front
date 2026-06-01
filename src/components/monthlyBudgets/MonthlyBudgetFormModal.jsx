@@ -107,7 +107,9 @@ function MonthlyBudgetFormModal({ isOpen, onClose, editing, onSave }) {
 
         {/* MÊS */}
         <div>
-          <label className="text-sm font-medium mb-1 block">Mês</label>
+          <label className="text-sm font-medium mb-1 block">
+            Mês <span className="text-red-500">*</span>
+          </label>
           <select
             value={form.month}
             onChange={(e) => setField('month', Number(e.target.value))}
@@ -126,7 +128,9 @@ function MonthlyBudgetFormModal({ isOpen, onClose, editing, onSave }) {
 
         {/* ANO */}
         <div>
-          <label className="text-sm font-medium mb-1 block">Ano</label>
+          <label className="text-sm font-medium mb-1 block">
+            Ano <span className="text-red-500">*</span>
+          </label>
           <input
             type="number"
             min="2000"
@@ -143,7 +147,9 @@ function MonthlyBudgetFormModal({ isOpen, onClose, editing, onSave }) {
 
         {/* VALOR */}
         <div>
-          <label className="text-sm font-medium mb-1 block">Limite Máximo de Gastos (R$)</label>
+          <label className="text-sm font-medium mb-1 block">
+            Limite Máximo de Gastos (R$) <span className="text-red-500">*</span>
+          </label>
           <input
             type="number"
             min="0.01"

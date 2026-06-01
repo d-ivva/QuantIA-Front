@@ -37,7 +37,7 @@ function TransactionTypePage() {
       const data = await getTransactionTypes();
       setTransactionTypes(data);
     } catch (err) {
-      toast.error("Erro ao carregar tipos de transação");
+      toast.error(getErrorMessage(err, "Erro ao carregar tipos de transação"));
       console.error(err);
     } finally {
       setLoading(false);
@@ -54,7 +54,7 @@ function TransactionTypePage() {
     setIsFormOpen(true);
   };
 
-  const getErrorMessage = (err) => {
+  const getErrorMessage = (err, fallback = "Erro inesperado") => {
     if (err.response?.data) {
       if (typeof err.response.data === "string") {
         return err.response.data;
@@ -69,24 +69,24 @@ function TransactionTypePage() {
         return Object.values(err.response.data.errors).flat().join(" | ");
       }
     }
-    return err.message || "Erro ao salvar tipo de transação";
+    return err.message || fallback;
   };
 
   const handleSave = async (data) => {
     try {
+      let result;
       if (editing) {
-        await updateTransactionType(editing.id, data);
-        toast.success("Tipo de transação atualizado com sucesso");
+        result = await updateTransactionType(editing.id, data);
       } else {
-        await createTransactionType(data);
-        toast.success("Tipo de transação criado com sucesso");
+        result = await createTransactionType(data);
       }
 
+      toast.success(result?.message || "Operação realizada com sucesso");
       setIsFormOpen(false);
       setEditing(null);
       await loadData();
     } catch (err) {
-      toast.error(getErrorMessage(err));
+      toast.error(getErrorMessage(err, "Erro ao salvar tipo de transação"));
     }
   };
 
@@ -97,14 +97,14 @@ function TransactionTypePage() {
 
   const handleDelete = async () => {
     try {
-      await deleteTransactionType(deleting.id);
-      toast.success("Tipo de transação excluído com sucesso");
+      const result = await deleteTransactionType(deleting.id);
+      toast.success(result?.message || "Tipo de transação excluído com sucesso");
 
       setDeleting(null);
       setIsDeleteOpen(false);
       await loadData();
     } catch (err) {
-      toast.error(getErrorMessage(err));
+      toast.error(getErrorMessage(err, "Erro ao excluir tipo de transação"));
     }
   };
 

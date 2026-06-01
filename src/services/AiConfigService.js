@@ -11,11 +11,13 @@ export const createAiConfig = async (config) => {
 };
 
 export const updateAiConfig = async (id, config) => {
-  await api.put(`/aiconfig/${id}`, config);
+  const { data } = await api.put(`/aiconfig/${id}`, config);
+  return data;
 };
 
 export const deleteAiConfig = async (id) => {
-  await api.delete(`/aiconfig/${id}`);
+  const { data } = await api.delete(`/aiconfig/${id}`);
+  return data;
 };
 
 export const hasAiConfig = async () => {

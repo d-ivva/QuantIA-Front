@@ -1,11 +1,9 @@
 import { useState, useEffect } from "react";
 import Modal from "../ui/Modal";
-import IconPicker from "../ui/IconPicker";
 
 const INITIAL_STATE = {
   name: "",
   direction: "IN",
-  icon: "",
 };
 
 function TransactionTypeFormModal({ isOpen, onClose, editing, onSave }) {
@@ -18,7 +16,6 @@ function TransactionTypeFormModal({ isOpen, onClose, editing, onSave }) {
         setForm({
           name: editing.name || "",
           direction: editing.direction === "IN" ? "IN" : "OUT",
-          icon: editing.icon || "",
         });
       } else {
         setForm(INITIAL_STATE);
@@ -36,7 +33,6 @@ function TransactionTypeFormModal({ isOpen, onClose, editing, onSave }) {
     const newErrors = {};
     if (!form.name.trim()) newErrors.name = "Nome do tipo é obrigatório";
     if (!form.direction) newErrors.direction = "Direção é obrigatória";
-    if (!form.icon.trim()) newErrors.icon = "Ícone é obrigatório";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -48,7 +44,6 @@ function TransactionTypeFormModal({ isOpen, onClose, editing, onSave }) {
     const payload = {
       name: form.name.trim(),
       direction: form.direction,
-      icon: form.icon.trim(),
     };
     if (editing) payload.id = editing.id;
 
@@ -73,7 +68,9 @@ function TransactionTypeFormModal({ isOpen, onClose, editing, onSave }) {
 
         {/* NOME */}
         <div>
-          <label className="text-sm font-medium mb-1 block">Nome do Tipo</label>
+          <label className="text-sm font-medium mb-1 block">
+            Nome do Tipo <span className="text-red-500">*</span>
+          </label>
           <input
             type="text"
             placeholder="Ex: Salário, Aluguel, Transferência..."
@@ -86,7 +83,9 @@ function TransactionTypeFormModal({ isOpen, onClose, editing, onSave }) {
 
         {/* DIREÇÃO */}
         <div>
-          <label className="text-sm font-medium mb-1 block">Direção da Transação</label>
+          <label className="text-sm font-medium mb-1 block">
+            Direção da Transação <span className="text-red-500">*</span>
+          </label>
           <div className="flex gap-3">
             {[
               { value: "IN", label: "Entrada", color: "green" },
@@ -109,16 +108,6 @@ function TransactionTypeFormModal({ isOpen, onClose, editing, onSave }) {
             ))}
           </div>
           {errors.direction && <p className="text-xs text-red-500 mt-1">{errors.direction}</p>}
-        </div>
-
-        {/* ÍCONE */}
-        <div>
-          <label className="text-sm font-medium mb-1 block">Ícone Font Awesome</label>
-          <IconPicker
-            value={form.icon}
-            onChange={(val) => setField("icon", val)}
-          />
-          {errors.icon && <p className="text-xs text-red-500 mt-1">{errors.icon}</p>}
         </div>
 
         {/* BOTÕES */}

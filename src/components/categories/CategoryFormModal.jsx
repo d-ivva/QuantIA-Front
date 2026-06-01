@@ -68,7 +68,9 @@ function CategoryFormModal({ isOpen, onClose, editing, onSave }) {
     >
       <form onSubmit={handleSubmit} className="space-y-5">
         <div className="flex justify-between items-end mb-1">
-            <label className="text-sm font-medium block">Nome</label>
+            <label className="text-sm font-medium block">
+              Nome <span className="text-red-500">*</span>
+            </label>
             <span className="text-xs text-gray-400">
               {form.name.length}/30
             </span>
@@ -91,7 +93,9 @@ function CategoryFormModal({ isOpen, onClose, editing, onSave }) {
 
         {/* COLOR */}
         <div>
-          <label className="text-sm font-medium mb-1 block">Color</label>
+          <label className="text-sm font-medium mb-1 block">
+            Color <span className="text-red-500">*</span>
+          </label>
           <div className="flex items-center gap-3">
             <input
               type="color"

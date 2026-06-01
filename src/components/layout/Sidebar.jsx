@@ -1,12 +1,13 @@
 import { NavLink } from 'react-router-dom';
 import {
-  ArrowLeftRight, CreditCard, Tag, BarChart2,
+  Home, ArrowLeftRight, CreditCard, Tag, BarChart2,
   Settings2, Target, Bot, KeyRound, Sun, Moon,
 } from 'lucide-react';
 import UserProfileMenu from '../profile/UserProfileMenu';
 import { useTheme } from '../../contexts/ThemeContext';
 
 const menuItems = [
+  { to: '/',                  label: 'Início',           icon: Home,           enabled: true, end: true },
   { to: '/transactions',      label: 'Transações',       icon: ArrowLeftRight, enabled: true },
   { to: '/reports',           label: 'Relatórios',       icon: BarChart2,      enabled: true },
   { to: '/accounts',          label: 'Contas',           icon: CreditCard,     enabled: true },
@@ -33,6 +34,7 @@ function NavItem({ item }) {
   return (
     <NavLink
       to={item.to}
+      end={item.end ?? false}
       className={({ isActive }) => `qs-link${isActive ? ' active' : ''}`}
     >
       <item.icon />
@@ -64,11 +66,15 @@ function LogoMark() {
   );
 }
 
-function Sidebar() {
+function Sidebar({ isOpen = false }) {
   const { theme, toggle } = useTheme();
 
   return (
-    <aside className="qs">
+    <aside
+      id="main-sidebar"
+      className={`qs${isOpen ? ' qs-open' : ''}`}
+      aria-label="Menu de navegação"
+    >
       {/* Logo */}
       <div className="qs-logo">
         <LogoMark />

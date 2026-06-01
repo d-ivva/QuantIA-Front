@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Plus } from "lucide-react";
 import Modal from "../ui/Modal";
 import SearchableSelect from "../ui/SearchableSelect";
 
@@ -40,6 +42,13 @@ function TransactionFormModal({
   const [errors, setErrors] = useState({});
 
   const isEditingInstallment = editing?.isInstallment;
+
+  const navigate = useNavigate();
+
+  const goTo = (path) => {
+    onClose();
+    navigate(path);
+  };
 
   useEffect(() => {
     if (isOpen) {
@@ -140,6 +149,10 @@ function TransactionFormModal({
          : "border-gray-300 focus:ring-blue-500 focus:border-blue-500"
      }`;
 
+  const filteredTypes = transactionTypes.filter(
+    (t) => t.direction === form.direction
+  );
+
   return (
     <Modal
       isOpen={isOpen}
@@ -151,7 +164,9 @@ function TransactionFormModal({
 
         {/* DIREÇÃO */}
         <div>
-          <label className="text-sm font-medium mb-1 block">Tipo</label>
+          <label className="text-sm font-medium mb-1 block">
+            Tipo <span className="text-red-500">*</span>
+          </label>
           <select
             value={form.direction}
             disabled={!!editing}
@@ -166,19 +181,31 @@ function TransactionFormModal({
         {/* TIPO TRANSAÇÃO */}
         <div>
           <label className="text-sm font-medium mb-1 block">
-            Tipo de Transação
+            Tipo de Transação <span className="text-red-500">*</span>
           </label>
 
-          <SearchableSelect
-            value={form.transactionTypeId}
-            onChange={(v) => setField("transactionTypeId", v)}
-            options={transactionTypes
-              .filter((t) => t.direction === form.direction)
-              .map((t) => ({
-                value: t.id,
-                label: t.name,
-              }))}
-          />
+          <div className="flex items-center gap-2">
+            <div className="flex-1 min-w-0">
+              <SearchableSelect
+                value={form.transactionTypeId}
+                onChange={(v) => setField("transactionTypeId", v)}
+                options={filteredTypes.map((t) => ({
+                  value: t.id,
+                  label: t.name,
+                }))}
+              />
+            </div>
+            {filteredTypes.length === 0 && (
+              <button
+                type="button"
+                onClick={() => goTo("/transaction-types")}
+                title="Cadastrar tipo de transação"
+                className="shrink-0 flex items-center justify-center w-10 h-10 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
+              >
+                <Plus className="w-4 h-4" />
+              </button>
+            )}
+          </div>
 
           {errors.transactionTypeId && (
             <p className="text-xs text-red-500 mt-1">
@@ -189,16 +216,32 @@ function TransactionFormModal({
 
         {/* CONTA */}
         <div>
-          <label className="text-sm font-medium mb-1 block">Conta</label>
+          <label className="text-sm font-medium mb-1 block">
+            Conta <span className="text-red-500">*</span>
+          </label>
 
-          <SearchableSelect
-            value={form.accountId}
-            onChange={(v) => setField("accountId", v)}
-            options={accounts.map((a) => ({
-              value: a.id,
-              label: a.name,
-            }))}
-          />
+          <div className="flex items-center gap-2">
+            <div className="flex-1 min-w-0">
+              <SearchableSelect
+                value={form.accountId}
+                onChange={(v) => setField("accountId", v)}
+                options={accounts.map((a) => ({
+                  value: a.id,
+                  label: a.name,
+                }))}
+              />
+            </div>
+            {accounts.length === 0 && (
+              <button
+                type="button"
+                onClick={() => goTo("/accounts")}
+                title="Cadastrar conta"
+                className="shrink-0 flex items-center justify-center w-10 h-10 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
+              >
+                <Plus className="w-4 h-4" />
+              </button>
+            )}
+          </div>
 
           {errors.accountId && (
             <p className="text-xs text-red-500 mt-1">
@@ -210,17 +253,31 @@ function TransactionFormModal({
         {/* CATEGORIA */}
         <div>
           <label className="text-sm font-medium mb-1 block">
-            Categoria
+            Categoria <span className="text-red-500">*</span>
           </label>
 
-          <SearchableSelect
-            value={form.categoryId}
-            onChange={(v) => setField("categoryId", v)}
-            options={categories.map((c) => ({
-              value: c.id,
-              label: c.name,
-            }))}
-          />
+          <div className="flex items-center gap-2">
+            <div className="flex-1 min-w-0">
+              <SearchableSelect
+                value={form.categoryId}
+                onChange={(v) => setField("categoryId", v)}
+                options={categories.map((c) => ({
+                  value: c.id,
+                  label: c.name,
+                }))}
+              />
+            </div>
+            {categories.length === 0 && (
+              <button
+                type="button"
+                onClick={() => goTo("/categories")}
+                title="Cadastrar categoria"
+                className="shrink-0 flex items-center justify-center w-10 h-10 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
+              >
+                <Plus className="w-4 h-4" />
+              </button>
+            )}
+          </div>
 
           {errors.categoryId && (
             <p className="text-xs text-red-500 mt-1">
@@ -231,7 +288,9 @@ function TransactionFormModal({
 
         {/* VALOR */}
         <div>
-          <label className="text-sm font-medium mb-1 block">Valor</label>
+          <label className="text-sm font-medium mb-1 block">
+            Valor <span className="text-red-500">*</span>
+          </label>
           <input
             value={form.amount}
             onChange={(e) =>
@@ -259,7 +318,9 @@ function TransactionFormModal({
 
         {/* DATA */}
         <div>
-          <label className="text-sm font-medium mb-1 block">Data</label>
+          <label className="text-sm font-medium mb-1 block">
+            Data <span className="text-red-500">*</span>
+          </label>
           <input
             type="date"
             value={form.transactionDate}

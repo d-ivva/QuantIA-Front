@@ -1,19 +1,4 @@
 import { Search, Pencil, Trash2, InboxIcon } from "lucide-react";
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { fas } from "@fortawesome/free-solid-svg-icons";
-import { far } from "@fortawesome/free-regular-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
-library.add(fas, far);
-
-const parseIcon = (val) => {
-  if (!val) return null;
-  if (val.includes(":")) {
-    const [prefix, name] = val.split(":");
-    return [prefix, name];
-  }
-  return ["fas", val];
-};
 
 function TransactionTypeTable({
   transactionTypes,
@@ -65,9 +50,6 @@ function TransactionTypeTable({
         <table className="w-full">
           <thead>
             <tr className="bg-gray-50 border-b border-gray-200">
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase w-16">
-                Ícone
-              </th>
               <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">
                 Nome
               </th>
@@ -82,22 +64,10 @@ function TransactionTypeTable({
 
           <tbody className="divide-y divide-gray-100">
             {filtered.map((t) => {
-              const icon = parseIcon(t.icon);
               const isIN = t.direction === "IN";
 
               return (
                 <tr key={t.id} className="hover:bg-gray-50 transition-colors">
-                  {/* ÍCONE */}
-                  <td className="px-6 py-4">
-                    <span className="w-9 h-9 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600 text-lg">
-                      {icon ? (
-                        <FontAwesomeIcon icon={icon} />
-                      ) : (
-                        <span className="text-gray-300 text-xs">—</span>
-                      )}
-                    </span>
-                  </td>
-
                   {/* NOME */}
                   <td className="px-6 py-4">
                     <span className="text-sm font-medium text-gray-900">{t.name || "—"}</span>

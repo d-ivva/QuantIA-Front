@@ -100,7 +100,7 @@ function AccountFormModal({ isOpen, onClose, editing, onSave }) {
         {/* NOME */}
         <div>
           <label className="text-sm font-medium mb-1 block">
-            Nome da Conta
+            Nome da Conta <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
@@ -117,7 +117,7 @@ function AccountFormModal({ isOpen, onClose, editing, onSave }) {
         {/* COR */}
         <div>
           <label className="text-sm font-medium mb-1 block">
-            Representação por Cor
+            Representação por Cor <span className="text-red-500">*</span>
           </label>
           <div className="flex items-center gap-3">
             <input
@@ -192,7 +192,7 @@ function AccountFormModal({ isOpen, onClose, editing, onSave }) {
           {form.hasCreditCard && (
             <div className="mt-4 pt-4 border-t border-gray-200">
               <label className="text-sm font-medium mb-1 block">
-                Dia de Fechamento da Fatura
+                Dia de Fechamento da Fatura <span className="text-red-500">*</span>
               </label>
               <input
                 type="number"

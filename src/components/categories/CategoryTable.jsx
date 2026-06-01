@@ -1,19 +1,5 @@
 import { Search, Pencil, Trash2, InboxIcon } from "lucide-react";
 
-function getContrastTextColor(hexColor) {
-  if (!hexColor) return "#FFFFFF";
-
-  const hex = hexColor.replace("#", "");
-
-  const r = parseInt(hex.substring(0, 2), 16);
-  const g = parseInt(hex.substring(2, 4), 16);
-  const b = parseInt(hex.substring(4, 6), 16);
-
-  const yiq = (r * 299 + g * 587 + b * 114) / 1000;
-
-  return yiq >= 128 ? "#111827" : "#FFFFFF";
-}
-
 function CategoryTable({
   categories,
   search,
@@ -28,7 +14,7 @@ function CategoryTable({
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-      {/* SEARCH */}
+      {/* BUSCA */}
       <div className="p-4 border-b border-gray-200">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -50,7 +36,7 @@ function CategoryTable({
         </div>
       </div>
 
-      {/* TABLE */}
+      {/* TABELA */}
       {filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 text-gray-400">
           <InboxIcon className="w-12 h-12 mb-3" />
@@ -64,11 +50,11 @@ function CategoryTable({
         <table className="w-full">
           <thead>
             <tr className="bg-gray-50 border-b border-gray-200">
+              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase w-16">
+                Cor
+              </th>
               <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">
                 Nome
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase w-32">
-                Cor (Hex)
               </th>
               <th className="px-6 py-3 text-center text-xs font-semibold text-gray-500 uppercase w-32">
                 Ações
@@ -79,36 +65,36 @@ function CategoryTable({
           <tbody className="divide-y divide-gray-100">
             {filtered.map((c) => (
               <tr key={c.id} className="hover:bg-gray-50 transition-colors">
-                {/* NAME / BADGE */}
+                {/* COR */}
                 <td className="px-6 py-4">
-                  <span
-                    className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium text-white shadow-sm"
-                    style={{ 
-                      backgroundColor: c.color,
-                      color: getContrastTextColor(c.color)}}
-                  >
-                    {c.name}
+                  <div
+                    className="w-6 h-6 rounded-full border border-gray-200 shadow-sm"
+                    style={{ backgroundColor: c.color || "#cccccc" }}
+                    title={c.color}
+                  />
+                </td>
+
+                {/* NOME */}
+                <td className="px-6 py-4">
+                  <span className="text-sm font-medium text-gray-900">
+                    {c.name || "—"}
                   </span>
                 </td>
 
-                {/* HEX COLOR */}
-                <td className="px-6 py-4 text-sm text-gray-600 uppercase font-mono">
-                  {c.color}
-                </td>
-
-                {/* ACTIONS */}
+                {/* AÇÕES */}
                 <td className="px-6 py-4">
                   <div className="flex justify-center gap-2">
                     <button
                       onClick={() => onEdit(c)}
                       className="p-2 rounded-lg text-blue-600 hover:bg-blue-100 transition-colors"
+                      title="Editar categoria"
                     >
                       <Pencil className="w-4 h-4" />
                     </button>
 
                     <button
                       onClick={() => onDelete(c)}
-                      title="Delete category"
+                      title="Excluir categoria"
                       className="p-2 rounded-lg text-red-600 hover:bg-red-100 transition-colors"
                     >
                       <Trash2 className="w-4 h-4" />

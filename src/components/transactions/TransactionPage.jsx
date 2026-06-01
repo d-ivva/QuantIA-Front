@@ -17,6 +17,18 @@ import TransactionTable from "./TransactionTable";
 import TransactionFormModal from "./TransactionFormModal";
 import TransactionDeleteDialog from "./TransactionDeleteDialog";
 
+const fmtDate = (d) =>
+  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
+    d.getDate()
+  ).padStart(2, "0")}`;
+
+const getCurrentMonthRange = () => {
+  const now = new Date();
+  const first = new Date(now.getFullYear(), now.getMonth(), 1);
+  const last = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  return { start: fmtDate(first), end: fmtDate(last) };
+};
+
 function TransactionsPage() {
   const [transactions, setTransactions] = useState([]);
   const [accounts, setAccounts] = useState([]);
@@ -24,6 +36,7 @@ function TransactionsPage() {
   const [transactionTypes, setTransactionTypes] = useState([]);
 
   const [search, setSearch] = useState("");
+  const [dateRange, setDateRange] = useState(getCurrentMonthRange);
   const [loading, setLoading] = useState(true);
 
   const [editing, setEditing] = useState(null);
@@ -54,7 +67,7 @@ function TransactionsPage() {
       setCategories(c);
       setTransactionTypes(tt);
     } catch (err) {
-      toast.error("Erro ao carregar dados");
+      toast.error(getErrorMessage(err, "Erro ao carregar dados"));
       console.error(err);
     } finally {
       setLoading(false);
@@ -67,12 +80,21 @@ function TransactionsPage() {
       currency: "BRL",
     }).format(value);
 
+  const dateFiltered = useMemo(() => {
+    return transactions.filter((t) => {
+      const d = (t.transactionDate || "").slice(0, 10);
+      if (dateRange.start && d < dateRange.start) return false;
+      if (dateRange.end && d > dateRange.end) return false;
+      return true;
+    });
+  }, [transactions, dateRange]);
+
   const { income, expense, balance } = useMemo(() => {
-    const income = transactions
+    const income = dateFiltered
       .filter((t) => t.direction === "income")
       .reduce((s, t) => s + t.amount, 0);
 
-    const expense = transactions
+    const expense = dateFiltered
       .filter((t) => t.direction === "expense")
       .reduce((s, t) => s + t.amount, 0);
 
@@ -81,7 +103,7 @@ function TransactionsPage() {
       expense,
       balance: income - expense,
     };
-  }, [transactions]);
+  }, [dateFiltered]);
 
   const handleCreate = () => {
     setEditing(null);
@@ -93,7 +115,7 @@ function TransactionsPage() {
     setIsFormOpen(true);
   };
 
-  const getErrorMessage = (err) => {
+  const getErrorMessage = (err, fallback = "Erro inesperado") => {
     if (err.response?.data) {
       if (typeof err.response.data === "string") {
         return err.response.data;
@@ -112,24 +134,24 @@ function TransactionsPage() {
       }
     }
 
-    return err.message || "Erro ao salvar transação";
+    return err.message || fallback;
   };
 
   const handleSave = async (data) => {
     try {
+      let result;
       if (editing) {
-        await updateTransaction(editing.id, data);
-        toast.success("Transação atualizada");
+        result = await updateTransaction(editing.id, data);
       } else {
-        await createTransaction(data);
-        toast.success("Transação criada");
+        result = await createTransaction(data);
       }
 
+      toast.success(result?.message || "Operação realizada com sucesso");
       setIsFormOpen(false);
       setEditing(null);
       await loadData();
     } catch (err) {
-      toast.error(getErrorMessage(err));
+      toast.error(getErrorMessage(err, "Erro ao salvar transação"));
     }
   };
 
@@ -140,14 +162,14 @@ function TransactionsPage() {
 
   const handleDelete = async () => {
     try {
-      await deleteTransaction(deleting.id);
-      toast.success("Transação excluída");
+      const result = await deleteTransaction(deleting.id);
+      toast.success(result?.message || "Transação excluída com sucesso");
 
       setDeleting(null);
       setIsDeleteOpen(false);
       await loadData();
     } catch (err) {
-      toast.error("Erro ao excluir transação");
+      toast.error(getErrorMessage(err, "Erro ao excluir transação"));
     }
   };
 
@@ -213,9 +235,14 @@ function TransactionsPage() {
 
       {/* TABELA */}
       <TransactionTable
-        transactions={transactions}
+        transactions={dateFiltered}
         search={search}
         onSearchChange={setSearch}
+        dateRange={dateRange}
+        onDateRangeChange={(field, value) =>
+          setDateRange((r) => ({ ...r, [field]: value }))
+        }
+        onResetDates={() => setDateRange(getCurrentMonthRange())}
         onEdit={handleEdit}
         onDelete={handleDeleteConfirm}
       />

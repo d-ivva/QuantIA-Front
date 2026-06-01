@@ -22,9 +22,9 @@
   --q-border-md: rgba(255, 255, 255, 0.12);
 
   /* Text */
-  --q-text-1: #EDF0FE;
-  --q-text-2: #8A91C8;
-  --q-text-3: #50578A;
+  --q-text-1: #F2F4FF;
+  --q-text-2: #AEB4E0;
+  --q-text-3: #7C83B5;
 
   /* Accent — emerald */
   --q-accent   : #10B981;
@@ -51,12 +51,12 @@
   --color-gray-100 : #151929;
   --color-gray-200 : #1C2038;
   --color-gray-300 : rgba(255, 255, 255, 0.1);
-  --color-gray-400 : #50578A;
-  --color-gray-500 : #686FA0;
-  --color-gray-600 : #8A91C8;
-  --color-gray-700 : #B0B8E0;
-  --color-gray-800 : #CDD4F5;
-  --color-gray-900 : #EDF0FE;
+  --color-gray-400 : #7C83B5;
+  --color-gray-500 : #939AC8;
+  --color-gray-600 : #AEB4E0;
+  --color-gray-700 : #C6CCEE;
+  --color-gray-800 : #DCE1FA;
+  --color-gray-900 : #F2F4FF;
 
   /* Semantic palette — dark */
   --color-emerald-50  : rgba(16, 185, 129, 0.09);
@@ -625,6 +625,63 @@ html[data-theme="dark"] .shadow-lg {
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
 }
 
+/* ─── HOMEPAGE — TICKER TAPE ────────────────────────────────── */
+@keyframes ticker-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.ticker-track {
+  display: flex;
+  align-items: center;
+  will-change: transform;
+}
+.ticker-track:hover {
+  animation-play-state: paused !important;
+}
+
+/* ─── HOMEPAGE — SHIMMER SKELETON ───────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--q-surface)  0%,
+    var(--q-elevated) 40%,
+    var(--q-surface)  80%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: 6px;
+}
+
+/* ─── HOMEPAGE — MARKET STATUS PULSE ────────────────────────── */
+@keyframes mkt-pulse {
+  0%, 100% { opacity: 1;   transform: scale(1);    }
+  50%       { opacity: 0.5; transform: scale(0.85); }
+}
+
+/* ─── HOMEPAGE — VALUE FLASH ─────────────────────────────────── */
+@keyframes value-flash-up {
+  0%   { background: rgba(16, 185, 129, 0.22); }
+  100% { background: transparent; }
+}
+@keyframes value-flash-down {
+  0%   { background: rgba(239, 68, 68, 0.22); }
+  100% { background: transparent; }
+}
+.value-flash-up   { animation: value-flash-up   0.9s ease-out forwards; }
+.value-flash-down { animation: value-flash-down 0.9s ease-out forwards; }
+
+/* ─── HOMEPAGE — SECTION STAGGER ────────────────────────────── */
+.q-stagger-6 > *:nth-child(1) { animation: q-card-up 0.35s 0.04s cubic-bezier(0.16,1,0.3,1) both; }
+.q-stagger-6 > *:nth-child(2) { animation: q-card-up 0.35s 0.09s cubic-bezier(0.16,1,0.3,1) both; }
+.q-stagger-6 > *:nth-child(3) { animation: q-card-up 0.35s 0.14s cubic-bezier(0.16,1,0.3,1) both; }
+.q-stagger-6 > *:nth-child(4) { animation: q-card-up 0.35s 0.19s cubic-bezier(0.16,1,0.3,1) both; }
+.q-stagger-6 > *:nth-child(5) { animation: q-card-up 0.35s 0.24s cubic-bezier(0.16,1,0.3,1) both; }
+.q-stagger-6 > *:nth-child(6) { animation: q-card-up 0.35s 0.29s cubic-bezier(0.16,1,0.3,1) both; }
+
 /* ─── RECHARTS FONT OVERRIDE ────────────────────────────────── */
 .recharts-text tspan {
   font-family: var(--font-mono) !important;
@@ -639,4 +696,108 @@ input:focus-visible, select:focus-visible, textarea:focus-visible,
 button:focus-visible {
   outline: 2px solid rgba(16, 185, 129, 0.55);
   outline-offset: 2px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVIDADE — SIDEBAR DRAWER
+   Desktop ≥ 1024 px : sidebar no flow normal (position relative)
+   Mobile  < 1024 px : sidebar como overlay fixo + topbar + backdrop
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── TOPBAR MOBILE ─────────────────────────────────────────── */
+.qs-topbar {
+  /* oculta no desktop; flex ativado pelo breakpoint abaixo */
+  display: none;
+  align-items: center;
+  gap: 11px;
+  height: 52px;
+  padding: 0 16px;
+  background: var(--q-surface);
+  border-bottom: 1px solid var(--q-border);
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 30;
+}
+
+.qs-hamburger {
+  width: 34px; height: 34px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  background: transparent;
+  border: 1px solid var(--q-border);
+  color: var(--q-text-2);
+  cursor: pointer;
+  transition: background 0.14s, color 0.14s, border-color 0.14s;
+  flex-shrink: 0;
+}
+.qs-hamburger:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--q-text-1);
+  border-color: var(--q-border-md);
+}
+.qs-hamburger:focus-visible {
+  outline: 2px solid rgba(16, 185, 129, 0.55);
+  outline-offset: 2px;
+}
+
+.qs-topbar-logo {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--q-text-1);
+  letter-spacing: -0.2px;
+  line-height: 1;
+}
+
+/* ─── BACKDROP ──────────────────────────────────────────────── */
+.qs-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 39;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  animation: overlay-enter-anim 0.2s ease forwards;
+}
+/* oculta backdrop em desktop mesmo que o estado React ainda seja true */
+@media (min-width: 1024px) {
+  .qs-backdrop { display: none !important; }
+}
+
+/* ─── BREAKPOINT — MOBILE / TABLET (< 1024 px) ─────────────── */
+@media (max-width: 1023px) {
+  /* Sidebar sai do flow e vira drawer fixo */
+  .qs {
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    height: 100dvh;
+    z-index: 40;
+    transform: translateX(-100%);
+    transition:
+      transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 0.28s ease;
+  }
+  .qs.qs-open {
+    transform: translateX(0);
+    box-shadow: 6px 0 48px rgba(0, 0, 0, 0.7);
+  }
+
+  /* Topbar aparece */
+  .qs-topbar { display: flex; }
+
+  /* Página inicial: padding menor em mobile */
+  .hp-main { padding: 16px 14px 28px !important; }
+}
+
+/* ─── BREAKPOINT — DESKTOP (≥ 1024 px) ─────────────────────── */
+@media (min-width: 1024px) {
+  /* Sidebar volta ao flow normal */
+  .qs {
+    position: relative;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+  /* Topbar escondida — desktop sempre tem sidebar visível */
+  .qs-topbar { display: none !important; }
 }

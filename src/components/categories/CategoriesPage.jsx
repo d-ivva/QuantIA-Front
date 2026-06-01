@@ -16,7 +16,7 @@ import CategoryDeleteDialog from "./CategoryDeleteDialog";
 
 function CategoriesPage() {
   const [categories, setCategories] = useState([]);
-  
+
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -38,7 +38,7 @@ function CategoriesPage() {
       const data = await getCategories();
       setCategories(data);
     } catch (err) {
-      toast.error("Erro ao carregar as categorias");
+      toast.error(getErrorMessage(err, "Erro ao carregar as categorias"));
       console.error(err);
     } finally {
       setLoading(false);
@@ -55,40 +55,39 @@ function CategoriesPage() {
     setIsFormOpen(true);
   };
 
-  const getErrorMessage = (err) => {
+  const getErrorMessage = (err, fallback = "Erro inesperado") => {
     if (err.response?.data) {
       if (typeof err.response.data === "string") {
         return err.response.data;
       }
-      // Mantendo 'mensagem' pois seu backend em C# ainda retorna as exceções com essa propriedade
-      if (err.response.data.mensagem) { 
-        return err.response.data.mensagem;
-      }
       if (err.response.data.message) {
         return err.response.data.message;
+      }
+      if (err.response.data.mensagem) {
+        return err.response.data.mensagem;
       }
       if (err.response.data.errors) {
         return Object.values(err.response.data.errors).flat().join(" | ");
       }
     }
-    return err.message || "Erro ao salvar categoria";
+    return err.message || fallback;
   };
 
   const handleSave = async (data) => {
     try {
+      let result;
       if (editing) {
-        await updateCategory(editing.id, data);
-        toast.success("Categoria atualizada com sucesso");
+        result = await updateCategory(editing.id, data);
       } else {
-        await createCategory(data);
-        toast.success("Categoria criada com sucesso");
+        result = await createCategory(data);
       }
 
+      toast.success(result?.message || "Operação realizada com sucesso");
       setIsFormOpen(false);
       setEditing(null);
       await loadData();
     } catch (err) {
-      toast.error(getErrorMessage(err));
+      toast.error(getErrorMessage(err, "Erro ao salvar categoria"));
     }
   };
 
@@ -99,14 +98,14 @@ function CategoriesPage() {
 
   const handleDelete = async () => {
     try {
-      await deleteCategory(deleting.id);
-      toast.success("Categoria deletada com sucesso");
+      const result = await deleteCategory(deleting.id);
+      toast.success(result?.message || "Categoria excluída com sucesso");
 
       setDeleting(null);
       setIsDeleteOpen(false);
       await loadData();
     } catch (err) {
-      toast.error(getErrorMessage(err));
+      toast.error(getErrorMessage(err, "Erro ao excluir categoria"));
     }
   };
 

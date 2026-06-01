@@ -42,7 +42,7 @@ function MonthlyBudgetsPage() {
       const data = await getMonthlyBudgets();
       setBudgets(data);
     } catch (err) {
-      toast.error("Erro ao carregar limites de gastos");
+      toast.error(getErrorMessage(err, "Erro ao carregar limites de gastos"));
       console.error(err);
     } finally {
       setLoading(false);
@@ -59,7 +59,7 @@ function MonthlyBudgetsPage() {
     setIsFormOpen(true);
   };
 
-  const getErrorMessage = (err) => {
+  const getErrorMessage = (err, fallback = 'Erro inesperado') => {
     if (err.response?.data) {
       if (typeof err.response.data === 'string') return err.response.data;
       if (err.response.data.message) return err.response.data.message;
@@ -67,24 +67,25 @@ function MonthlyBudgetsPage() {
       if (err.response.data.errors)
         return Object.values(err.response.data.errors).flat().join(' | ');
     }
-    return err.message || 'Erro ao salvar limite de gastos';
+    return err.message || fallback;
   };
 
   const handleSave = async (data) => {
     try {
+      let result;
       if (editing) {
-        await updateMonthlyBudget(editing.id, data);
-        toast.success("Limite de gastos atualizado com sucesso");
+        result = await updateMonthlyBudget(editing.id, data);
       } else {
-        await createMonthlyBudget(data);
-        toast.success("Limite de gastos criado com sucesso");
+        result = await createMonthlyBudget(data);
       }
+
+      toast.success(result?.message || "Operação realizada com sucesso");
       setIsFormOpen(false);
       setEditing(null);
       await loadData();
       setReportKey((k) => k + 1);
     } catch (err) {
-      toast.error(getErrorMessage(err));
+      toast.error(getErrorMessage(err, "Erro ao salvar limite de gastos"));
     }
   };
 
@@ -95,14 +96,14 @@ function MonthlyBudgetsPage() {
 
   const handleDelete = async () => {
     try {
-      await deleteMonthlyBudget(deleting.id);
-      toast.success("Limite de gastos excluído com sucesso");
+      const result = await deleteMonthlyBudget(deleting.id);
+      toast.success(result?.message || "Limite de gastos excluído com sucesso");
       setDeleting(null);
       setIsDeleteOpen(false);
       await loadData();
       setReportKey((k) => k + 1);
     } catch (err) {
-      toast.error(getErrorMessage(err));
+      toast.error(getErrorMessage(err, "Erro ao excluir limite de gastos"));
     }
   };
 

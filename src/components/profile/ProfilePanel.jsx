@@ -34,6 +34,7 @@ export default function ProfilePanel({ onClose, initialProfile, onProfileUpdate 
   const [saving,      setSaving]      = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [saveError,   setSaveError]   = useState('');
+  const [saveMessage, setSaveMessage] = useState('');
   const [showDelete,  setShowDelete]  = useState(false);
   const [exiting,     setExiting]     = useState(false);
   const inputRef = useRef(null);
@@ -63,9 +64,11 @@ export default function ProfilePanel({ onClose, initialProfile, onProfileUpdate 
     setSaveSuccess(false);
     try {
       const res = await api.put('/profile', { name: editName.trim() });
-      setProfile(res.data);
+      const updatedProfile = res.data?.data ?? res.data;
+      setProfile(updatedProfile);
       setSaveSuccess(true);
-      onProfileUpdate?.(res.data);
+      setSaveMessage(res.data?.message ?? 'Perfil atualizado com sucesso.');
+      onProfileUpdate?.(updatedProfile);
       setTimeout(() => setSaveSuccess(false), 3000);
     } catch (err) {
       setSaveError(err.response?.data?.message ?? 'Erro ao salvar.');
@@ -173,7 +176,9 @@ export default function ProfilePanel({ onClose, initialProfile, onProfileUpdate 
           <div className="space-y-4">
             <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Editar informações</h3>
             <div className="space-y-1.5">
-              <label className="block text-xs text-slate-500">Nome de exibição</label>
+              <label className="block text-xs text-slate-500">
+                Nome de exibição <span className="text-red-400">*</span>
+              </label>
               <input
                 ref={inputRef}
                 type="text"
@@ -228,7 +233,7 @@ export default function ProfilePanel({ onClose, initialProfile, onProfileUpdate 
                   <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                   </svg>
-                  Salvo!
+                  {saveMessage || 'Salvo!'}
                 </span>
               ) : 'Salvar alterações'}
             </button>
